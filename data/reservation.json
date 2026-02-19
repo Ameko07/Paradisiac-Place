@@ -1,0 +1,13 @@
+[{
+    "id_res" : 1,
+    "nom": "Jeand Dupon",
+    "email": "Jean@gmail.com",
+    "date_debut": "2026-06-10",
+    "date_fin": "2026-06-15",
+    "nb_pers": 2,
+    "chambre_choisie": "ch-std",
+    "activite": ["act-1","act-2"],
+    "prestations_choisies":["p-1"],
+    "statut": "en_attente",
+    "message": "arrive tardive."
+}]
