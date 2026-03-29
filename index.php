@@ -24,7 +24,7 @@
             </div>
         </div>
     </nav>
-    <!-- Un autre contener pour centrer le texte-->
+    <!-- Un autre contener pour centrer le texte pour afficher l'accueil-->
     <div class="container mt-4" id="main-content">
         <h1>Bienvenue à Madagascar </h1>
         <p>Découvrez les plages de sable blanc , la faune et la flore de Madagascar ! </p>

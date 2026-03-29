@@ -1,8 +1,12 @@
-[{
-    "nom":"Jean Dupon",
-    "mail":"Jean@gmail.com",
-    "mdp" : "mdp",
-    "id_res": 1,
-    "arrhes": 50,
-    "reduction":0 
-}]
+[
+    {
+        "id_c": 1,
+        "nom": "kaka",
+        "email": "kaka@hfkah.com",
+        "mdp": "mada123",
+        "id_res": "2",
+        "arrhes": 0,
+        "reduction": 0
+    }
+   
+]

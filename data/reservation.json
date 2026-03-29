@@ -1,13 +1,35 @@
-[{
-    "id_res" : 1,
-    "nom": "Jeand Dupon",
-    "email": "Jean@gmail.com",
-    "date_debut": "2026-06-10",
-    "date_fin": "2026-06-15",
-    "nb_pers": 2,
-    "chambre_choisie": "ch-std",
-    "activite": ["act-1","act-2"],
-    "prestations_choisies":["p-1"],
-    "statut": "en_attente",
-    "message": "arrive tardive."
-}]
+[
+    {
+        "id_res": 0,
+        "nom": "Jeand Dupon",
+        "email": "Jean@gmail.com",
+        "date_debut": "2026-06-10",
+        "date_fin": "2026-06-15",
+        "nb_pers": 2,
+        "chambre_choisie": 1,
+        "message": "arrive tardive.",
+        "status": "valid\u00e9"
+    },
+    {
+        "id_res": 1,
+        "nom": "Naruto Uzumaki",
+        "email": "hinata@gmail.com",
+        "date_debut": "2026-03-27",
+        "date_fin": "2026-03-29",
+        "nb_pers": "1",
+        "chambre_choisie": "1",
+        "message": "c'est un week-end en amoureux",
+        "status": "refus\u00e9"
+    },
+    {
+        "id_res": 2,
+        "nom": "kaka",
+        "email": "kaka@hfkah.com",
+        "date_debut": "2026-04-05",
+        "date_fin": "2026-04-16",
+        "nb_pers": "1",
+        "chambre_choisie": "2",
+        "message": "Teste des nouveau changement pour Admin ",
+        "status": "valid\u00e9"
+    }
+]

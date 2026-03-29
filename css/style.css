@@ -1,0 +1,19 @@
+/* Personnalisation du thème Madagascar */
+
+body {
+    background-color: #f8f9fa; /* Un gris très clair pour reposer les yeux */
+}
+
+.navbar {
+    border-bottom: 3px solid #ffc107; /* Une ligne dorée sous le menu (couleur sable) */
+}
+
+h1 {
+    color: #198754; /* Le vert de Madagascar pour les titres principaux */
+    font-weight: bold;
+}
+
+#admin-retour {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}

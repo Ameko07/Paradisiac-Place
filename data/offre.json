@@ -1,17 +1,17 @@
 {
     "chambre" : [
-        {"id": "ch-std", "nom" : "Bungalow Sable Blanc", "prix": 80, "capacite": 2},
-        {"id": "ch-pls", "nom" : "Suite Lagon Turcoise", "prix": 150, "capacite": 4}
+        {"id": 1, "nom" : "Bungalow Sable Blanc", "prix": 80, "capacite": 2},
+        {"id": 2, "nom" : "Suite Lagon Turcoise", "prix": 150, "capacite": 4}
     ],
     "activite" : [
-        {"id":"act-1", "nom": "Observation des Lémuriens", "unite" : "demi-journee","prix":40},
-        {"id":"act-2", "nom": "Plongée Barrière de Corail","unite" : "heure", "prix":25 },
-        {"id":"act-3", "nom": "Expédition Quad Désert","unite" : "journee", "prix":90 }
+        {"id":1, "nom": "Observation des Lémuriens", "unite" : "demi-journee","prix":40},
+        {"id":2, "nom": "Plongée Barrière de Corail","unite" : "heure", "prix":25 },
+        {"id":3, "nom": "Expédition Quad Désert","unite" : "journee", "prix":90 }
     ],
     "prestation": [
-        {"id":"p-1", "nom": "Navette Aéroport", "prix": 30},
-        {"id":"p-2", "nom": "Dîner Fruit de mer", "prix": 25},
-        {"id":"p-3", "nom": "Petit Déjeuner Malgache", "prix": 20}
+        {"id":1, "nom": "Navette Aéroport", "prix": 30},
+        {"id":2, "nom": "Dîner Fruit de mer", "prix": 25},
+        {"id":3, "nom": "Petit Déjeuner Malgache", "prix": 20}
     ]
 
 }

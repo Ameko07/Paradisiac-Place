@@ -1,5 +1,5 @@
 [{
-    "id_act": "act-3",
+    "id_act": 3,
     "date": "2026-06-13",
     "animateur": "Rakoto",
     "participants": ["Jean Dupon","Autre Client"],
