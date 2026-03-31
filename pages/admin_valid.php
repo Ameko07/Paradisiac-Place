@@ -2,6 +2,14 @@
 <!--à rajouter dans l'interface d'administration-->
 
 <?php
+
+    session_start();
+    // vérification que l'utilisateur est bien un admin
+    if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+        // redirection vers la page d'accueil si ce n'est pas le cas
+        header('Location: ../index.php');
+        exit ("Accès refusé, vous n'êtes pas un admin");
+    }
     // on va récupérer toute les reservation en status "en attente"
     $json = file_get_contents("../data/reservation.json");
     $attentes = json_decode($json, true);

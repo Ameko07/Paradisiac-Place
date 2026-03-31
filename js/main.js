@@ -20,18 +20,60 @@ $(document).ready(function(){
     // page de l'administration à load par clique sur le bouton en haut à droite
     $('#menu-admin').click(function(event){
         event.preventDefault();
-        // on load la page admin 
-        $('#main-content').load('../admin.php', function(response,status,xhr){
-            if (status == "success"){
-                // injection du tableau de validation des reservation pour l'admin 
-                $("#zone_tableau").load('pages/admin_valid.php');
+        // on teste d'abord si l'admin est connecté avant de charger la page admin
+        // chargement de la page d'authentification de l'admin dans la div central
+        $('#main-content').load('pages/login.php', function(){
+            // chargement du formulaire perso pour l'admin
+            $('#type-connexion').val('admin');
+            $('#login-header').removeClass('bg-primary').addClass('bg-dark');
+            $('#login-title').text('Espace Admin');
+            $('#btn-login').removeClass('bg-primary').addClass('btn-dark');
+            $('#login-footer').hide();
+    
+        });
+    
+    });
+
+    $(document).on('submit', '#form-login', function(event){
+        // on emppeche le navigateur de suivre le lien
+        event.preventDefault();
+        let donnees = $(this).serialize();
+
+        $.ajax({
+            url: 'pages/verif_connexion.php',
+            method: 'POST',
+            data: donnees,
+            success: function(response){
+                res = response.trim();
+
+            if (res === "success_admin"){
+                // on load la page admin 
+                $('#main-content').load('../admin.php', function(response,status,xhr){
+                    if (status == "success"){
+                        // injection du tableau de validation des reservation pour l'admin 
+                        $("#zone_tableau").load('pages/admin_valid.php');
+                    }
+                    // en cas d'erreur de chargement du fichier on renvoie error
+                    else{
+                        $("#zone_tableau").html("<p class='text-danger'> ERREUR :  Impossible de charger le tableau des réservations.</p>");
+
+                    }
+
+                });
             }
-            // en cas d'erreur de chargement du fichier on renvoie error
+            else if (res === "success_client"){
+                // c'est le client
+                $('#main-content').load('pages/espace_client.php');
+                $('#menu-client').text('Espace Client'); // on change le texte du menu pour indiquer que le client est connecté
+            }
             else{
-                $("#zone_tableau").html("<p class='text-danger'> ERREUR :  Impossible de charger le tableau des réservations.</p>");
-
+                // sinon une erreur
+                $('#login-retour').html("<div class='alert alert-danger'> " + response + "</div>");
             }
-
+        },
+        error: function(){
+            $('#login-retour').html("<div class='alert alert-danger'> ERREUR : Impossible de traiter la connexion. Veuillez réessayer plus tard.</div>");
+        }
         });
     });
 
@@ -219,9 +261,38 @@ $(document).ready(function(){
     /**---------FIN PARTIE RESERVATION -------------------**/
 
     
+/** --- PARTIE CLIENT  -----**/
+
+/** --- PARTIE CONNEXION LOGIN-CLIENT  -----**/
+$('#menu-client').click(function(event){
+    event.preventDefault();
+
+    $.get('pages/check_session.php', function(role){
+        if (role.trim() === "client"){
+                // si le client est déjà connecté on le redirige vers son espace client
+                $('#main-content').load('pages/espace_client.php');
+        }else{
+                // sinon on charge la page de connexion pour le client
+                 
+            $('#main-content').load('pages/login.php' , function(){
+                // chargement du formulaire perso pour le client 
+
+                $('#type-connexion').val('client');
+                $('#login-header').addClass('bg-primary');
+                $('#login-title').text('Espace Client');
+                $('#btn-login').addClass('btn-primary');
+                $('#label-email').text('votre adresse email');
+            });
+        }
+    });
+
+});
 
 
-    
 
+
+/**----- FIN PARTIE CONNEXION LOGIN  -----**/
+
+/**----- FIN PARTIE CLIENT  -----**/
     
 });

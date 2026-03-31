@@ -5,6 +5,13 @@
      *  
      * **/   
 
+    session_start();
+    // vérification que l'utilisateur est bien un admin
+    if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+        // redirection vers la page d'accueil si ce n'est pas le cas
+        header('Location: ../index.php');
+        exit ("Accès refusé, vous n'êtes pas un admin");
+    }
     //on va commencer par récupérer les reservations validé pour les afficher dans un tableau
     $json = file_get_contents("../data/reservation.json");
     $reservations = json_decode($json, true) ?: []; // au cas ou le fichier est vide

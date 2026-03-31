@@ -19,7 +19,7 @@
         "nb_pers": "1",
         "chambre_choisie": "1",
         "message": "c'est un week-end en amoureux",
-        "status": "refus\u00e9"
+        "status": "en attente"
     },
     {
         "id_res": 2,
@@ -30,6 +30,6 @@
         "nb_pers": "1",
         "chambre_choisie": "2",
         "message": "Teste des nouveau changement pour Admin ",
-        "status": "valid\u00e9"
+        "status": "en attente"
     }
 ]
