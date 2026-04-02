@@ -6,4 +6,8 @@
 <div class="container mt-4" id="main-content">
         <h1>Bienvenue à Madagascar </h1>
         <p>Découvrez les plages de sable blanc , la faune et la flore de Madagascar ! </p>
+<!-- TODO : ajouter des images en background-->
+<!-- TODO : un thème couleur verte pour tout le site -->
+<!-- TODO : un bouton Reservation en plus TOUT en bas quand on scroll sur le site -->
+ 
 </div>

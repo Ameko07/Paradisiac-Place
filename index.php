@@ -12,8 +12,9 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <!--Boite invisible aui empeche le menu de se coller au bord de l'ecran-->
+
         <div class="container">
-            <a class="navbar-brand" href="#">MadaDream</a>
+            <a class="navbar-brand" href="#" id="MadaDream">MadaDream</a>
             <div class="navbar-nav">
                 <!--style pour les lien-->
                 <a class="nav-link" href="#" id="menu-accueil"> Accueil</a>

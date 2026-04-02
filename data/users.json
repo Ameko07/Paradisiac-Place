@@ -4,9 +4,38 @@
         "nom": "kaka",
         "email": "kaka@hfkah.com",
         "mdp": "mada123",
-        "id_res": "2",
+        "id_res": 2
+    },
+    {
+        "id_c": 2,
+        "nom": "Naruto Uzumaki",
+        "email": "hinata@gmail.com",
+        "mdp": "mada123",
+        "id_res": 1
+    },
+    {
+        "id_c": 3,
+        "nom": "Mr test",
+        "email": "test@test.com",
+        "mdp": "mada123",
+        "id_res": "3"
+    },
+    {
+        "id_c": 4,
+        "nom": "test2",
+        "email": "test2@test.com",
+        "mdp": "mada123",
+        "id_res": "4",
+        "arrhes": 0,
+        "reduction": 0
+    },
+    {
+        "id_c": 5,
+        "nom": "test3",
+        "email": "test3@test.com",
+        "mdp": "mada123",
+        "id_res": "4",
         "arrhes": 0,
         "reduction": 0
     }
-   
 ]

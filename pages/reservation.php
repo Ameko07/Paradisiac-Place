@@ -5,6 +5,7 @@
 <!-- pour faire simple cette partie va être injecté dans index et non afficher comme étant une nouvelle page.
  de toute façon j'ai ajouté un contenaire dans index pour contenir ce qui change au niveau de la vue du client. -->
 
+
 <?php // catalogue des offres 
 // on récupère toutes les données des offres
     $json = file_get_contents("../data/offre.json"); 
@@ -68,7 +69,7 @@ que l'utilisateur ne rentre pas un faux mail -->
 au lieu de devoir cherher les noms des chambres-->
                 
                 <select name="chambre_choisie" class="form-select">
-                    <option value = "indiferent"> Un bungalow qu'on choisi pour vous </option>
+                    <option value = "1"> Un bungalow qu'on choisi pour vous </option>
                     <?php 
                     
                     // parcour de la liste des offres de chambre et afficher les détails de chacun
@@ -78,6 +79,28 @@ au lieu de devoir cherher les noms des chambres-->
                     ?>
                 </select>
             </div>
+
+<!----choix des prestations -->
+            <div class="mb-4">
+                <label class="fw-bold text-secondary mb-2">Activités souhaitées :</label>
+                <div class="row">
+                    <?php foreach ($offres["prestation"] as $prestation) :?>
+                        <div class="col-md-6 mb-2">
+                            <div class="form-check border rounded p-2 shadow-sm" >
+                                <input class="form-check-input ms-1" type="checkbox" 
+                                            name="prestations[]" 
+                                            value="<?php echo $prestation['id'] ?>" 
+                                            id="prestation-<?php echo $prestation['id'] ?>">
+                                <label class="form-check-label ms-2" for="prestation-<?=$prestation['id'] ?>">
+                                    <?= htmlspecialchars($prestation['nom']) ?> 
+                                    <span class="badge bg-info text-dark"><?= $prestation['prix'] ?>€</span>
+                                </label>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
 
 <!--le formulaire du commentaire -->
             <div class="mb-3">

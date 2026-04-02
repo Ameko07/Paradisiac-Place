@@ -4,6 +4,7 @@
      * une page qui affiche l'ensemble des réservation validé pour pouvoir faire les plannings
      *  
      * **/   
+    //TODO : geston des planning donc affichage d'un calendrier avec peut-être la couleur des réservation dessus jsp. 
 
     session_start();
     // vérification que l'utilisateur est bien un admin
@@ -18,8 +19,8 @@
 
     // on vq filtrer les reservqtion pour uniquement prendre les validé
     $valides = array_filter($reservations, function($res) {
-        if (!isset($res['status'])) {
-            return mb_strtolower($res['status'], 'UTF-8') === 'validé';
+        if (isset($res['status'])) {
+            return strtolower($res['status'], 'UTF-8') === 'validé';
         }
         return false; 
     });

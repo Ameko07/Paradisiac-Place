@@ -4,6 +4,7 @@ $(document).ready(function(){
 
     /**---------------DEBUT PARTIE ACCUEIL --------------------**/
     // accueil : l'accueil s'affiche de base , mais se réaffiche quand on reviens en appuyant sur le bouton accueil 
+    // TODO : Bouton MadaDream qui renvoie à l'accueil et qui est visible sur toutes les pages (dans la barre de navigation)
     $('#menu-accueil').click(function(event){
         // on emppeche le navigateur de suivre le lien 
         event.preventDefault();
@@ -12,6 +13,12 @@ $(document).ready(function(){
         $('#main-content').load('pages/accueil.php');
             
     });
+    $('#MadaDream').click(function(event){
+        // on emppeche le navigateur de suivre le lien 
+        event.preventDefault();
+        $('#main-content').load('pages/accueil.php');
+    });
+
 
     /**------FIN PARTIE ACCUEIL**/
 
@@ -257,6 +264,57 @@ $(document).ready(function(){
 
     });
 
+    /** scirpt permettant d'interdir au client de rentrer des dates invalides **/
+    $(document).ready(function(){
+        // pas de date déjà passée pour la date de début et de fin
+        
+        // la date d'aujourd'hui au format ISO (YYYY-MM-DD) pour l'attribut min des champs de date
+        let today = new Date().toISOString().split('T')[0];
+
+        $('input[name="date_debut"]').attr('min', today);
+        $('input[name="date_debut"]').on('change', function(){
+            let dateArrive  = $(this).val();
+
+            if (dateArrive){
+                // au moins le lendemain 
+                let minDateFin = new Date(dateArrive);
+                dateArrive.setDate(dateArrive.getDate() + 1); // on ajoute un jour à la date d'arrivée pour obtenir la date minimale de départ
+                let minDateFinStr = minDateFin.toISOString().split('T')[0];
+
+                let dateFinInput = $('input[name="date_fin"]');
+
+                dateFinInput.attr('min', today);
+                // si la date de fin est déjà sélectionnée et qu'elle est avant la nouvelle date d'arrivée, on la réinitialise
+                if (dateFinInput.val() && dateFinInput.val() < minDateFinStr){
+                    dateFinInput.val('');
+                }
+            }
+        });
+
+        // dernière vérification avant d'envoyer
+        $('#form-reservation').on('submit', function(event){
+
+            // récupération des dates d'arrivée et de départ pour vérifier que la date de départ est bien après la date d'arrivée
+            let dateArrive = $('input[name="date_debut"]').val();
+            let dateDepart = $('input[name="date_fin"]').val();
+            // si les deux dates sont renseignées , on vérifie que la date de départ est après la date d'arrivée
+            if (dateArrive && dateDepart){
+                let dateArriveDate = new Date(dateArrive);
+                let dateDepartDate = new Date(dateDepart);
+                // si la date de départ est avant la date d'arrivée , on empêche l'envoi du formulaire
+                if (dateArriveDate >= dateDepartDate){
+                    event.preventDefault();
+                    $('#patienter').html("<div class='alert alert-danger'> ERREUR : La date de départ doit être après la date d'arrivée.</div>");
+                }
+            }
+        });
+        
+    });
+
+    // affichage dynamique des montant lors de la selection des prestations
+
+
+
 
     /**---------FIN PARTIE RESERVATION -------------------**/
 
@@ -264,29 +322,82 @@ $(document).ready(function(){
 /** --- PARTIE CLIENT  -----**/
 
 /** --- PARTIE CONNEXION LOGIN-CLIENT  -----**/
-$('#menu-client').click(function(event){
-    event.preventDefault();
+// TODO  : faire la facturation estimé puis celui de du client connecté dans son espace client 
+    $('#menu-client').click(function(event){
+        event.preventDefault();
 
-    $.get('pages/check_session.php', function(role){
-        if (role.trim() === "client"){
-                // si le client est déjà connecté on le redirige vers son espace client
-                $('#main-content').load('pages/espace_client.php');
-        }else{
-                // sinon on charge la page de connexion pour le client
-                 
-            $('#main-content').load('pages/login.php' , function(){
-                // chargement du formulaire perso pour le client 
+        $.get('pages/check_session.php', function(role){
+            if (role.trim() === "client"){
+                    // si le client est déjà connecté on le redirige vers son espace client
+                    $('#main-content').load('pages/espace_client.php');
+            }else{
+                    // sinon on charge la page de connexion pour le client
+                    
+                $('#main-content').load('pages/login.php' , function(){
+                    // chargement du formulaire perso pour le client 
 
-                $('#type-connexion').val('client');
-                $('#login-header').addClass('bg-primary');
-                $('#login-title').text('Espace Client');
-                $('#btn-login').addClass('btn-primary');
-                $('#label-email').text('votre adresse email');
-            });
-        }
+                    $('#type-connexion').val('client');
+                    $('#login-header').addClass('bg-primary');
+                    $('#login-title').text('Espace Client');
+                    $('#btn-login').addClass('btn-primary');
+                    $('#label-email').text('votre adresse email');
+                });
+            }
+        });
+
     });
 
-});
+    // calcul du montant estimé pour le client connecté
+
+    // les offres de chambre avec leur prix
+    let offres = [];
+
+    // fonction pour recuperer les offres from Json 
+    function chargerOffres(){
+        $.getJSON('data/offre.json', function(data){
+            offres = data;
+        });
+
+    }
+
+    chargerOffres(); // appel de la fonction pour charger les offres au chargement de la page
+    $(document).on('change', '#date-debut , #date-fin , #chambre', function(){
+        
+        
+        // definition des variables pour les dates de début et de fin de la reservation
+        let d1 = $('#date-debut').val();
+        let d2 = $('#date-fin').val();
+        let chambreID = $('#chambre').val();
+
+        if (d1 && d2 && chambreID){
+            let date1 = new Date(d1);
+            let date2 = new Date(d2);
+
+            if (date1 < date2){
+                let diff = Math.abs(date2 - date1);
+                // conversion de la durée en nombre de nuits
+                let nuits = Math.ceil(diff / (1000 * 60 * 60 * 24)); 
+                
+                // récupération du prix de la chambre sélectionnée 
+                // syntaxe de la fonction find : dans offres chaque offre est teste pour la comparaison ]
+                // et on retoune celui qu on trouve
+                let choixChambre = offres.find(offre => offre.id == chambreID);
+                // techniquement on ne peut que trouver une chambre avec cet id car les id sont uniques ,
+                //  mais on peut ne pas trouver de chambre si l'id n'existe pas dans le fichier Json
+                let prixChambre = choixChambre ? choixChambre.prix : 0;
+
+                let montant = nuits * prixChambre;
+
+                $('#montant-estime').html(
+                    "<div class='alert alert-info'> Montant estimé : <strong>" + montant + "€</strong> pour " + nuits + " nuits.</div>");
+            }
+        }
+
+        
+    });
+
+
+
 
 
 
