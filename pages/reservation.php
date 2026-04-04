@@ -84,16 +84,16 @@ au lieu de devoir cherher les noms des chambres-->
             <div class="mb-4">
                 <label class="fw-bold text-secondary mb-2">Activités souhaitées :</label>
                 <div class="row">
-                    <?php foreach ($offres["prestation"] as $prestation) :?>
+                    <?php foreach ($offres["activite"] as $activite) :?>
                         <div class="col-md-6 mb-2">
                             <div class="form-check border rounded p-2 shadow-sm" >
                                 <input class="form-check-input ms-1" type="checkbox" 
-                                            name="prestations[]" 
-                                            value="<?php echo $prestation['id'] ?>" 
-                                            id="prestation-<?php echo $prestation['id'] ?>">
-                                <label class="form-check-label ms-2" for="prestation-<?=$prestation['id'] ?>">
-                                    <?= htmlspecialchars($prestation['nom']) ?> 
-                                    <span class="badge bg-info text-dark"><?= $prestation['prix'] ?>€</span>
+                                            name="activites[]" 
+                                            value="<?php echo $activite['id'] ?>" 
+                                            id="activite-<?php echo $activite['id'] ?>">
+                                <label class="form-check-label ms-2" for="activite-<?=$activite['id'] ?>">
+                                    <?= htmlspecialchars($activite['nom']) ?> 
+                                    <span class="badge bg-info text-dark"><?= $activite['prix'] ?>€</span>
                                 </label>
                             </div>
                         </div>

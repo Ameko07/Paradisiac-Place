@@ -28,5 +28,14 @@
         "id_res": "4",
         "arrhes": 0,
         "reduction": 0
+    },
+    {
+        "id_c": 5,
+        "nom": "test5",
+        "email": "test5@gmail.com",
+        "mdp": "mada123",
+        "id_res": "4",
+        "arrhes": 0,
+        "reduction": 0
     }
 ]

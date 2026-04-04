@@ -1,0 +1,16 @@
+{
+    "guides": [
+        {"id_g": 1,"nom": "Rakoto","domaine" : "Observation","actif": true},
+        {"id_g": 2,"nom": "Lalaina","domaine" : "Pirogue","actif": true},
+        {"id_g": 3,"nom": "Rasoa","domaine" : "Randonnée","actif": true}
+        
+    ],
+    "moniteurs": [
+        {"id_m": 1,"nom": "Rasoa","domaine" : "Plongée","actif": true},
+        {"id_m": 3,"nom": "Rakoto","domaine" : "Plongée","actif": true},
+        {"id_m": 2,"nom": "Miora","domaine" : "Quad","actif": true},
+        {"id_m": 4,"nom": "Lala","domaine" : "Quad","actif": true}
+    ]
+
+
+}

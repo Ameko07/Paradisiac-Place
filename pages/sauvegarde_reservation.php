@@ -38,10 +38,9 @@
 
     }
     
-    // Liste des préstations choisies
+    // Liste des activités choisies
 
-    $presations_choisies = isset($_POST['prestations'])
-     ? array_map('intval', $_POST['prestations']) : [];
+    $activite_choisies = isset($_POST['activites'])? array_map('intval', $_POST['activites']) : [];
     // un tableau de données pour la réservation 
     // affectation Clé valeur pour chaque donnée de la reservation 
 
@@ -55,7 +54,7 @@
         "date_fin" => $date_depart,
         "nb_pers" => (int)$nb_pers,
         "chambre_choisie" => (int)$choix_chamb,
-        "prestations" => $presations_choisies,
+        "activites" => $activite_choisies,
         "message" => $commentaire,
         "reduction" => 0,
         "arrhes" => 0,

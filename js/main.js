@@ -98,12 +98,12 @@ $(document).ready(function(){
         let id = $(this).data('id');
         // on affiche ou cache les détails de la réservation correspondante
         let detailsRow = $(`#details-${id}`);
-
+        /*
         console.log("ID de la réservation cliquée : " + id); // debug pour vérifier que l'id est bien récupéré
         console.log("Ligne de détails ciblée : ", detailsRow); // debug pour vérifier que la ligne de détails est bien ciblée
         console.log("Classe de la ligne de détails : " + detailsRow.attr('class')); // debug pour vérifier la classe de la ligne de détails
         console.log("nombre de lignes de détails : " + detailsRow.length); // debug pour vérifier le nombre de lignes de détails
-
+        */
         // di c'est visible on le cache , sinon on l'affiche
         if (!detailsRow.hasClass('d-none')){
             detailsRow.addClass('d-none');
@@ -437,6 +437,43 @@ $(document).ready(function(){
         
     });
 
+    // gestion des ajout de prestations 
+    $(document).on('submit', '.form-modifier-prestation', function(event){
+        event.preventDefault();
+
+        let form = $(this);
+        let btn = form.find('button');
+        let donnees = form.serialize();
+        
+        // désactivation du bouton pour éviter les double clics
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Chargement...'); 
+            
+
+        // appel ajax pour ajouter la prestation à la facture du client
+        $.ajax({
+            url: 'pages/modifier_prestation.php',
+            method: 'POST',
+            data: donnees,
+            success: function(response){
+                if(response.trim() === "success"){
+
+                    form.fadeOut(300, function(){
+
+                    // on recharge juste la page du client pour mettre à jour la facture et les prestations ajoutées
+                        $('#main-content').load('pages/espace_client.php');
+                    });
+                }else{
+                    alert("ERREUR au niveau du serveur: " + response);
+                    btn.prop('disabled', false).html('Réessayer plus tard'); // réactivation du bouton en cas d'erreur
+                }
+            },
+            error: function(){
+                alert("ERREUR : Impossible de modifier la prestation. Veuillez réessayer plus tard.");
+                btn.prop('disabled', false).html('Réessayer plus tard'); // réactivation du bouton en cas d'erreur
+            }
+        });
+        
+    });
 
 
 

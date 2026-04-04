@@ -7,6 +7,7 @@
         {"id":1, "nom": "Observation des Lémuriens", "unite" : "demi-journee","prix":40},
         {"id":2, "nom": "Plongée Barrière de Corail","unite" : "heure", "prix":25 },
         {"id":3, "nom": "Expédition Quad Désert","unite" : "journee", "prix":90 }
+        
     ],
     "prestation": [
         {"id":1, "nom": "Navette Aéroport", "prix": 30},

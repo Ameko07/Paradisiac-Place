@@ -14,12 +14,15 @@
     }
     $path_reservation = "../data/reservation.json";
     
-    // lecture du fichier
+    // lecture du fichier de reservation 
     $json_reservation = file_get_contents($path_reservation);
     $reservations = json_decode($json_reservation, true) ?: [];
 
     $json_offres = file_get_contents("../data/offre.json");
     $offres = json_decode($json_offres, true);
+
+    
+
 
     // on va chercher la reservation avec l'id correspondant
     $current = null;
@@ -65,6 +68,17 @@
 
     // disponibilite de l chambre
     $disponibilite = $stock_chambre - $occupation;
+
+    // lecture du fichier des planning pour vérifier les disponibilités
+    $json_planning = file_get_contents("../data/planning.json");
+    $planning = json_decode($json_planning, true) ?: [];
+
+    $conflict_activite = [];
+    foreach ($planning as $act) {
+        if ($act['date'] >= $current['date_debut'] && $act['date'] <= $current['date_fin']) {
+            $conflict_activite[] = $act;
+        }
+    }
 
     
 ?>

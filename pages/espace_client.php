@@ -12,6 +12,8 @@
         exit("Accès refusé, vous n'êtes pas un client");
     }
 
+
+
     // sinon c'est un client qui est connecté on peut tout afficher (pour les client)
 
     $email_client = $_SESSION['email_client'] ;
@@ -40,6 +42,20 @@
             $reservation_client = $reservation;
             break;
         }
+    }
+
+    // tableau des prestations à choisir pour le client 
+    if (isset($_POST['ajouter_prestation'])) {
+        $id_p = $_POST['id_presta'];
+
+        // on ajoute l'id de la prestation choisie dans le tableau des prestations de la reservation du client
+        if (!in_array($id_p, $reservation_client['prestations'])) {
+            $reservation_client['prestations'][] = $id_p;
+        }
+        // on sauvegarde la reservation mise à jour dans le fichier JSON
+        $json_reservations = json_encode($reservations, JSON_PRETTY_PRINT);
+        file_put_contents($fichier_reservation, $json_reservations);
+
     }
 
     $date_debut = $reservation_client['date_debut'] ?? '';
@@ -146,6 +162,39 @@
                 </div>
             </div>
         </div>
+        <div class="card shadow-sm mb-4 ">
+            <div class="card-body">
+                <h4 class="card-title mb-4 border-bottom pb-2">Prestations supplémentaires :</h4>
+                <div class="row">
+                    <?php foreach ($offres["prestation"] as $prestation) :?>
+                        <div class="col-md-4 mb-2">
+                            <?php
+                                $deja_ADD = in_array($prestation['id'], $prestations_choisies);
+                            ?>
+                            <form method="POST" class="form-modifier-prestation d-flex align-items-center justify-content-between border rounded p-2
+                             <?php echo $deja_ADD ? 'bg-light' : 'bg-white'; ?>">
+                                <span><?php echo htmlspecialchars($prestation['nom']); ?></span>
+                                <input type="hidden" name="id_presta" value="<?php echo $prestation['id']; ?>">
+
+                                <?php if ($deja_ADD) : ?>
+                                    <input type="hidden" name="action" value="supprimer">
+                                    <button type="submit" class="btn btn-sm btn-danger ">
+                                        <i class="bi bi-plus-lg"></i>Supprimer
+                                    </button>
+                                <?php else : ?>
+                                    <input type="hidden" name="action" value="ajouter">
+                                    <button type="submit"  class="btn btn-success ">
+                                        <i class="bi bi-plus-lg"></i>Ajouter
+                                    </button>
+                                <?php endif; ?>
+
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+
+                </div>
+            </div>
+        </div>
         
         <div class="col-md-7">
             <div class="card shadow-sm border-success">
@@ -207,35 +256,4 @@
             </div>
         </div>
     </div>
-</div>
-        
-
-
-            
-
-
-
-                
-            
-        
-
-    
-        
-            
-            
-                    
-
-                        
-
-            
-
-                       
-                        
-                        
-
-                        
-                    
-                    
-                   
-     
-
+</div>  
