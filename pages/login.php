@@ -94,7 +94,5 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

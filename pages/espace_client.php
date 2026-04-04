@@ -97,12 +97,11 @@
     $Prix_total_apres_reduc = $prix_total_brut - $remise;
 
     
-// TODO : ajouter une section pour les prestations supplémentaires (spa, excursions, etc) et les afficher dans la facture aussi
+// TODO : ajouter une section pour les prestations supplémentaires (spa, excursions, etc)
 
 // TODO : ajouter une section pour les avis clients et permettre au client de laisser un avis sur son séjour
 // TODO : ajouter une section pour les messages et permettre au client de contacter l'hôtel depuis son espace client
 
-// TODO : corriger les identifiant des chambre choisi dans le fichier reservation.json (actuellement c'est une string alors que dans les offres c'est un int) pour que le prix s'affiche correctement
 ?>
 
 <div class="container mt-4">

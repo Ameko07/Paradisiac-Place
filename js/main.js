@@ -84,7 +84,7 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('click', '#menu-valider-res', function(){
+    $(document).on('click', '#menu-valid-res', function(event){
         // on emppeche le navigateur de suivre le lien
         event.preventDefault();
 
@@ -92,13 +92,53 @@ $(document).ready(function(){
             $("#zone_tableau").load('pages/admin_valid.php')
     });
 
-    /**bouton details**/
-    $(document).on('click', '.btn-details', function(){
-        // on emppeche le navigateur de suivre le lien
+    /**gestion des réservations**/
+    $(document).on('click', '.tr-res', function(){
+        // on recupere l'id de la reservation cliquée
         let id = $(this).data('id');
-        $(`#details-${id}`).toggleClass('d-none'); // toggle pour afficher ou cacher les détails
-    
+        // on affiche ou cache les détails de la réservation correspondante
+        let detailsRow = $(`#details-${id}`);
+
+        console.log("ID de la réservation cliquée : " + id); // debug pour vérifier que l'id est bien récupéré
+        console.log("Ligne de détails ciblée : ", detailsRow); // debug pour vérifier que la ligne de détails est bien ciblée
+        console.log("Classe de la ligne de détails : " + detailsRow.attr('class')); // debug pour vérifier la classe de la ligne de détails
+        console.log("nombre de lignes de détails : " + detailsRow.length); // debug pour vérifier le nombre de lignes de détails
+
+        // di c'est visible on le cache , sinon on l'affiche
+        if (!detailsRow.hasClass('d-none')){
+            detailsRow.addClass('d-none');
+        }else{
+            // on cache tous les détails avant d'afficher celui qui correspond à la réservation cliquée
+            $("tr[id^='details-']").addClass('d-none'); 
+
+            // affiche de la ligne actuelle
+            detailsRow.removeClass('d-none').show();
+
+            let target = detailsRow.find('td').first(); // on cible la première cellule de la ligne de détails pour y charger le contenu
+
+            target.html('<div class="text-center p-3"><div class="spinner-border spinner-border-sm"></div> Chargement ...</div>'); // message de chargement pendant la requête
+            target.load('pages/get_reservation_details.php?id=' + id, function(response, status, xhr){
+                if (status == "error"){
+                    target.html("<div class='text-danger'> ERREUR : Impossible de charger les détails. Veuillez réessayer plus tard.</div>");
+                }
+
+            
+            /*let detailsContent = detailsRow.find('.container-detail');
+            if(detailsContent.length === 0){
+                detailsContent = detailsRow.find('td');
+            }
+
+            // chargement dynamiaque des details 
+            detailsContent.html('<div class="text-center p-3"><div class="spinner-border spinner-border-sm"></div> Chargement ...</div>');
+            // charge l'URL de la page de détails en passant l'id de la réservation pour récupérer les informations correspondantes
+            detailsContent.load('pages/get_reservation_details.php?id=' + id);*/
+            });
+        }
+
+        
     });
+                
+    
 
     // pour le fichier admin_valid.php
     // bouton accepter reservation pour l'admin 
@@ -263,6 +303,7 @@ $(document).ready(function(){
         })
 
     });
+
 
     /** scirpt permettant d'interdir au client de rentrer des dates invalides **/
     $(document).ready(function(){

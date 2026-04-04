@@ -1,7 +1,7 @@
 {
     "chambre" : [
-        {"id": 1, "nom" : "Bungalow Sable Blanc", "prix": 80, "capacite": 2},
-        {"id": 2, "nom" : "Suite Lagon Turcoise", "prix": 150, "capacite": 4}
+        {"id": 1, "nom" : "Bungalow Sable Blanc", "prix": 80, "capacite": 2, "disponible": 5 },
+        {"id": 2, "nom" : "Suite Lagon Turcoise", "prix": 150, "capacite": 4, "disponible": 3 }
     ],
     "activite" : [
         {"id":1, "nom": "Observation des Lémuriens", "unite" : "demi-journee","prix":40},
