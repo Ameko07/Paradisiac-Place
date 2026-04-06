@@ -37,5 +37,16 @@
         "id_res": "4",
         "arrhes": 0,
         "reduction": 0
+    },
+    {
+        "id_c": 6,
+        "nom": "test3",
+        "email": "test3@test.com",
+        "mdp": "mada123",
+        "role": "client",
+        "id_res": "2",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
     }
 ]

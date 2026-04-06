@@ -20,6 +20,7 @@
                 <!--style pour les lien menu -->
                 <a class="nav-link" href="#" id="menu-valid-res"><i class="bi bi-check2-square me-2"></i> Valider Réservation</a>
                 <a class="nav-link" href="#" id="menu-gestion-planning"><i class="bi bi-calendar3"></i> Gestion Planning</a>
+                <a class="nav-link" href="#" id="menu-gestion-activite"><i class="bi bi-people-fill me-2"></i> Gestion Activités</a>
 
             </div>
             <div class="navbar-nav">

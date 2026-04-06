@@ -5,22 +5,30 @@
         * une page dédier à l'admin 
     **/
 
+    session_start();
+
+    if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+        exit ("Accès refusé, vous n'êtes pas un admin");
+    }
+
+
+
     // récupération des données de la reservation par AJAX
     
     $idValider = $_POST['id']??null; // id de la réservation à valider
 
     // variable mail car js envoie mail et non email pour éviter les confusions avec les variables PHP
     $mail = $_POST['mail'] ?? ''; // mail du client pour vérifier s'il est déjà membre
-
+    $mdp_client = $_POST['mdp'] ?? ''; // mot de passe du clinet si la reservation est validé pour créer le compte client
     $action = $_POST['action'] ?? ''; //valider ou refuser
 
     $path_reservation = "../data/reservation.json";
     $path_users = "../data/users.json";
 // lecture du fichier 
-        $json = file_get_contents($path_reservation);
-        $reservations = json_decode($json, true) ?: []; // au cas ou le fichier est vide 
+    $json = file_get_contents($path_reservation);
+    $reservations = json_decode($json, true) ?: []; // au cas ou le fichier est vide 
     // variable boolean pour savoir si on a trouvé la réservation à valider
-        $trouve = false;
+    $trouve = false;
     
     // variable temp pour sauvegarder les info de la reservation 
     $reserv_info = null;
@@ -81,7 +89,10 @@
                     // et si le json est vide ? 
                     if(!empty($users)){
                         $last_user = end($users);
-                        $next_id = ($last_user['id_c']  ?: 0) + 1; // création d'id pour le nouvel utilisateur
+
+                        // création d'id pour le nouvel utilisateur
+                        // si le fichier JSON des users n'est pas vide, on prend l'id du dernier utilisateur et on ajoute 1 pour créer l'id du nouvel utilisateur
+                        $next_id = ($last_user['id_c']  ?: 0) + 1; 
                     }
 
                     $nouveau_client = array(
@@ -89,7 +100,9 @@
                         'nom' => $reserv_info['nom'],
                         'email' => $reserv_info['email'],
                         'mdp' => 'mada123',
+                        'role' => 'client',
                         'id_res' => $idValider,
+                        'prestation' => [],
                         'arrhes' =>0,
                         'reduction' => 0
                     );

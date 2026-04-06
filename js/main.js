@@ -93,50 +93,34 @@ $(document).ready(function(){
     });
 
     /**gestion des réservations**/
-    $(document).on('click', '.tr-res', function(){
-        // on recupere l'id de la reservation cliquée
-        let id = $(this).data('id');
-        // on affiche ou cache les détails de la réservation correspondante
+    // bouton examiner
+    $(document).on('click', '.btn-examiner', function(event){
+
+        // pour éviter que le clic sur le bouton n'affecte la ligne entière
+        event.stopPropagation(); 
+
+        // on récupère l'id de la reservation à exminer grace à la ligne du tableau 
+        let tr = $(this).closest('tr');
+        let id = tr.data('id');
+        // on cible la ligne de détails qui correspond
         let detailsRow = $(`#details-${id}`);
-        /*
-        console.log("ID de la réservation cliquée : " + id); // debug pour vérifier que l'id est bien récupéré
-        console.log("Ligne de détails ciblée : ", detailsRow); // debug pour vérifier que la ligne de détails est bien ciblée
-        console.log("Classe de la ligne de détails : " + detailsRow.attr('class')); // debug pour vérifier la classe de la ligne de détails
-        console.log("nombre de lignes de détails : " + detailsRow.length); // debug pour vérifier le nombre de lignes de détails
-        */
-        // di c'est visible on le cache , sinon on l'affiche
+
+        // si on voit déjà la ligne , on la cache 
         if (!detailsRow.hasClass('d-none')){
             detailsRow.addClass('d-none');
         }else{
-            // on cache tous les détails avant d'afficher celui qui correspond à la réservation cliquée
-            $("tr[id^='details-']").addClass('d-none'); 
+            // sinon on l'affiche et on charge tout 
+            // on ferme les autres lignes ouvertent avant d'ouvrir celle ci
+            $("tr[id^='details-']").addClass('d-none');
+            detailsRow.removeClass('d-none');
+            let target = detailsRow.find('.container-details');
 
-            // affiche de la ligne actuelle
-            detailsRow.removeClass('d-none').show();
-
-            let target = detailsRow.find('td').first(); // on cible la première cellule de la ligne de détails pour y charger le contenu
-
-            target.html('<div class="text-center p-3"><div class="spinner-border spinner-border-sm"></div> Chargement ...</div>'); // message de chargement pendant la requête
-            target.load('pages/get_reservation_details.php?id=' + id, function(response, status, xhr){
-                if (status == "error"){
-                    target.html("<div class='text-danger'> ERREUR : Impossible de charger les détails. Veuillez réessayer plus tard.</div>");
-                }
-
-            
-            /*let detailsContent = detailsRow.find('.container-detail');
-            if(detailsContent.length === 0){
-                detailsContent = detailsRow.find('td');
-            }
-
-            // chargement dynamiaque des details 
-            detailsContent.html('<div class="text-center p-3"><div class="spinner-border spinner-border-sm"></div> Chargement ...</div>');
-            // charge l'URL de la page de détails en passant l'id de la réservation pour récupérer les informations correspondantes
-            detailsContent.load('pages/get_reservation_details.php?id=' + id);*/
-            });
+            target.html("<div class='text-center p-3'><div class='spinner-border' ></div>Chargement...</div>");
+            target.load('pages/get_reservation_details.php?id=' + id);
         }
 
-        
-    });
+
+    }); 
                 
     
 
@@ -149,6 +133,7 @@ $(document).ready(function(){
         let btn = $(this);
         let id  = btn.data('id');
         let mailClient = btn.data('email');
+        let mdp = btn.data('mdp');
         
 
         // desactivation du bouton pour les double clic
@@ -167,6 +152,7 @@ $(document).ready(function(){
             data: { 
                 id: id,
                 mail: mailClient,
+                mdp: mdp,
                 action: 'valider',
                 
             },
@@ -227,19 +213,62 @@ $(document).ready(function(){
     });
 
 
-    /** gestion des plannigns **/
-    $('#menu-gestion-planning').click(function(event){
+    /** gestion des plannings 
+     * le lien est injecté après connexion admin, donc on délègue l'événement sur le document
+     * **/
+    $(document).on('click', '#menu-gestion-planning', function(event){
         event.preventDefault();
-        $('#main-content').load('pages/planning.php', function(response,status,xhr){
 
-            // affichage d'erreur si  un probleme survient
+        $('#main-content').load('pages/planning.php', function(response, status, xhr){
+            // affichage d'erreur si un problème survient
             if (status == "error"){
-                $("#main-content").html("<p class='text-danger'> ERREUR :  Impossible de charger le planning.</p>");
-
+                $("#main-content").html("<p class='text-danger'> ERREUR : Impossible de charger le planning.</p>");
             }
-
         });
     });
+
+    $(document).on('click', '#menu-gestion-activite', function(event){
+        event.preventDefault();
+
+        $('#main-content').load('pages/activite_admin.php', function(response, status, xhr){
+            if (status == "error"){
+                $("#main-content").html("<p class='text-danger'> ERREUR : Impossible de charger la gestion des activités.</p>");
+            }
+        });
+    });
+
+    /** gestion des activiter et des groupes**/
+    
+    $(document).on('submit', '.form-groupe-activite', function(event){
+        event.preventDefault();
+
+        let form = $(this);
+        
+        // appel ajax pour créer le groupe d'activité
+        $.ajax({
+            url: 'pages/traitement_groupe.php',
+            method: 'POST',
+            data: form.serialize(),
+            success: function(response){
+                if(response.trim() === "success"){
+                    // affichage du message
+                    alert("Groupe d'activité créé avec succès !");
+
+                    // on recharge la page pour afficher le nouveau groupe dans la liste
+                    $('#main-content').load('pages/activite_admin.php');
+                }else{
+                    alert("ERREUR au niveau du serveur: " + response);
+                }
+            },
+            error: function(){
+                alert("ERREUR : Impossible de créer le groupe d'activité. Veuillez réessayer plus tard.");
+            }
+        });
+    });
+
+
+
+
     
 
     

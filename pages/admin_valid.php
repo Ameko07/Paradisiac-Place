@@ -109,7 +109,7 @@
             </tr>
             <tr id="details-<?php echo $reservation['id_res']; ?>" class="d-none bg-light">
                 <td colspan="5">
-                    <div class="container-detail p-3"></div>
+                    <div class="container-details p-3"></div>
                 </td>
 
             </tr>
