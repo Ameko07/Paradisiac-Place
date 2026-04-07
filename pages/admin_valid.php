@@ -3,6 +3,9 @@
 
 <?php
 
+// TODO : gerer la connexion quand cliquer sur les autre bouton 
+// TODO : bouton retour vers la liste des reservation dans la page de validation d'une reservation
+
     session_start();
     // vérification que l'utilisateur est bien un admin
     if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {

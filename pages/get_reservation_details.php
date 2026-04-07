@@ -139,6 +139,21 @@
             <div class="col-md-6">
                 <!-- Affichage des ACTIONS de l'admin-->
                 <h6>Actions de l'admininstrateur:</h6>
+
+                <div class="card border-0 bg-light mb-3">
+                    <div class="card-body py-2">
+                        <h6 class="mb-2">Modifier les arrhes reçues</h6>
+                        <form action="pages/update_paiement.php" method="POST" class="d-inline form-update-arrhes">
+                            <input type="hidden" name="id_res" value="<?php echo htmlspecialchars($current['id_res']); ?>">
+                            <div class="input-group input-group-sm">
+                                <input type="number" name="montant_arrhes" class="form-control" min="0" step="0.01" value="<?php echo htmlspecialchars($current['arrhes'] ?? 0); ?>" placeholder="Arrhes reçues">
+                                <button class="btn btn-primary" type="submit">OK</button>
+                            </div>
+                        </form>
+                        <small class="text-muted">Montant actuel : <?php echo number_format((float)($current['arrhes'] ?? 0), 2); ?>€</small>
+                    </div>
+                </div>
+
                 <!-- Si la chambre est disponible, on affiche le message pour le client et le bouton de validation -->
                 <?php if($dispo_ok):?>
                     <div class="alert alert-warning py-2">

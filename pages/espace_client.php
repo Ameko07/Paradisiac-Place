@@ -37,35 +37,61 @@
     
     // comme un client n'a droit qu'à une reservation , on cehrche sa reservation 
     $reservation_client = null;
-    foreach ($reservations as $reservation) {
+    $reservation_index = null;
+    foreach ($reservations as $index => $reservation) {
         if ($reservation['email'] === $email_client) {
             $reservation_client = $reservation;
+            $reservation_index = $index;
             break;
         }
     }
 
     // tableau des prestations à choisir pour le client 
-    if (isset($_POST['ajouter_prestation'])) {
-        $id_p = $_POST['id_presta'];
+    if (isset($_POST['id_presta']) && $reservation_client) {
+        $id_presta = $_POST['id_presta'];
+        $action = $_POST['action'] ?? 'ajouter';
 
-        // on ajoute l'id de la prestation choisie dans le tableau des prestations de la reservation du client
-        if (!in_array($id_p, $reservation_client['prestations'])) {
-            $reservation_client['prestations'][] = $id_p;
+
+        // si l'action est "ajouter" on rajoute la prestation dans le tableau
+        if ($action === 'ajouter') {
+            if (!in_array($id_presta, $reservation_client['prestations'] ?? [])) {
+                $reservation_client['prestations'][] = $id_presta;
+            }
+
+            // sinon non on supprime la prestation
+        } else {
+            if (($key = array_search($id_presta, $reservation_client['prestations'] ?? [])) !== false) {
+                unset($reservation_client['prestations'][$key]);
+                // réindexer le tableau pour éviter les trous
+                $reservation_client['prestations'] = array_values($reservation_client['prestations']);
+            }
         }
-        // on sauvegarde la reservation mise à jour dans le fichier JSON
-        $json_reservations = json_encode($reservations, JSON_PRETTY_PRINT);
-        file_put_contents($fichier_reservation, $json_reservations);
+
+        // on remet la reservation modifiee dans le tableau principal avant sauvegarde
+        if ($reservation_index !== null) {
+            $reservations[$reservation_index] = $reservation_client;
+        }
+
+        // on sauvegarde direct
+        file_put_contents($fichier_reservation, json_encode($reservations, JSON_PRETTY_PRINT));
 
     }
+    /** ------------------calcul de la facture------------------------- **/
+
+    
 
     $date_debut = $reservation_client['date_debut'] ?? '';
     $date_fin = $reservation_client['date_fin'] ?? '';
 
     // calcul du nombre de jours de la reservation
-    $deb = new DateTime($date_debut); 
-    $fin = new DateTime($date_fin);
+    $nb_nuits = 1;
+    if (!empty($date_debut) && !empty($date_fin)) {
+        $deb = new DateTime($date_debut);
+        $fin = new DateTime($date_fin);
+        $nb_nuits = $deb->diff($fin)->days;
+    }
 
-    $nb_nuits = $deb->diff($fin)->days; // le nombre de jours de la reservation
+    // le nombre de jours de la reservation
     // pas le droit d'avoir une reservation de 0 jours ou moins
     if ($nb_nuits <= 0) {
         $nb_nuits = 1;
@@ -75,7 +101,8 @@
     // on le récupère juste depuis les offres 
     $prix_chambre = 0;
     $nom_chambre = '';
-    foreach ($offres['chambre'] as $c) {
+    $liste_chambres = $offres['chambre'] ?? [];
+    foreach ($liste_chambres as $c) {
         if ($c['id'] == $reservation_client['chambre_choisie']) {
             $prix_chambre = $c['prix'];
             $nom_chambre = $c['nom'];
@@ -88,8 +115,9 @@
 
     $total_presta = 0;
     $details_presta = [];
+    $liste_prestations = $offres['prestation'] ?? [];
     foreach ($prestations_choisies as $id_presta) {
-        foreach ($offres['prestation'] as $presta) {
+        foreach ($liste_prestations as $presta) {
             if ($presta['id'] == $id_presta) {
                 $total_presta += $presta['prix'];
                 $details_presta[] = $presta;
@@ -98,22 +126,32 @@
         }
     }
 
+    
 
 
-    $Prix_total = $nb_nuits * $prix_chambre;
-    $prix_total_brut = $Prix_total + $total_presta;
+
+    // calcul du prix total avant réduction
+    $total_hebergement = $nb_nuits * $prix_chambre;
+    $Prix_total = $total_hebergement + $total_presta;
+
+    // réduction à appliquer (2 reductions existent:
+    //  reduction dans Users qui est une reduc de fidelité 
+    // et réduction dans reservation qui est une reduc de saisonnalité)
+
+    $taux_reduction_reserv = isset($reservation_client['reduction']) ? $reservation_client['reduction'] : 0;
+    $montant_remise = ($Prix_total * $taux_reduction_reserv) / 100; 
+
+    // apres la reduction 
+    $Prix_total_apres_reduc = $Prix_total - $montant_remise;
+
+    // les arrhes versées par le client
+    $arrhes = isset($reservation_client['arrhes']) ? $reservation_client['arrhes'] : 0;
+
+    // le prix restant à payer
+    $reste_a_payer = max(0, $Prix_total_apres_reduc - $arrhes);
 
     
 
-    // les reduc et arrhes sont maintenant stockés au niveau de la réservation
-    
-    $reduction = isset($reservation_client['reduction']) ? (float)$reservation_client['reduction'] : 0;
-    $arrhes = isset($reservation_client['arrhes']) ? (float)$reservation_client['arrhes'] : 0;
-    $remise = ($reduction / 100) * $prix_total_brut;
-    $Prix_total_apres_reduc = $prix_total_brut - $remise;
-
-    
-// TODO : ajouter une section pour les prestations supplémentaires (spa, excursions, etc)
 
 // TODO : ajouter une section pour les avis clients et permettre au client de laisser un avis sur son séjour
 // TODO : ajouter une section pour les messages et permettre au client de contacter l'hôtel depuis son espace client
@@ -125,28 +163,28 @@
 <!--Utilisation des col : des colonne pour affichage à gauche et à droite-->
         <div class="col-md-8">
 <!----Affichage d'un message de bienvenue personnalisé avec le nom du client et une icône-->
-            <div class="container-fluid py-2">
+            
                 <!-- le container fuid permert de qui prends la largeur dispo--> 
-                <h1 class="display-5 fw-bold text-success">
+            <h1 class="display-5 fw-bold text-success">
 
 <!-- format bi-sun : -->
-                    <i class="bi bi-sun"></i>Bienvenue, <?php echo htmlspecialchars($nom_client); ?>!</h1>
-                <p class="col-md-8 fs-4 text-muted"> Votre séjour à Madagascar commence ici.</p>
-            </div>
+                <i class="bi bi-sun"></i>Bienvenue, <?php echo htmlspecialchars($nom_client); ?>!</h1>
+            <p class="col-md-8 fs-4 text-muted"> Votre séjour à Madagascar commence ici. Voici votre récapitulatif de votre séjour.</p>
+            
         </div>
     
         <div class="col-md-4 text-end text-md-end">
             <!-- un bouton de déconnexion qui redirige vers la page de login et détruit la session-->
-            <a class="btn btn-outline-danger" href="pages/logout.php" >
+            <a class="btn btn-outline-danger" href="logout.php" >
                 <i class="bi bi-box-arrow-left me-2"></i> Déconnexion</a>
         </div>
     </div>
     <div class="row">
         <div class="col-md-5">
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card border-0 shadow-sm mb-4 bg-light">
                 <div class="card-body">
                     <!--affichage des infor de séjours -->
-                    <h4 class="card-title mb-4 border-bottom pb-2">Information du séjour :</h4>
+                    <h5 class="border-bottom pb-2 mb-3">Information du séjour :</h5>
                     <!--utilisation de la class bi pour les icones -->
                     <!-- bi-calendar permet d'afficher un calendrier--> 
                     <p><i class="bi bi-calendar-check text-success"></i><strong>durée :</strong>
@@ -164,19 +202,21 @@
         </div>
         <div class="card shadow-sm mb-4 ">
             <div class="card-body">
-                <h4 class="card-title mb-4 border-bottom pb-2">Prestations supplémentaires :</h4>
-                <div class="row">
-                    <?php foreach ($offres["prestation"] as $prestation) :?>
-                        <div class="col-md-4 mb-2">
-                            <?php
-                                $deja_ADD = in_array($prestation['id'], $prestations_choisies);
-                            ?>
+                <h5 class="border-bottom pb-2 mb-3">Prestations supplémentaires :</h5>
+                <div class="list-group list-group-flush">
+<!--Affichage des prestations supplémentaires choisies par le client-->
+                    <?php foreach ($liste_prestations as $prestation) :
+                        $isActive = in_array($prestation['id'], $prestations_choisies);
+                        ?>
+                        <div class="list-group-item d-flex align-items-center justify-content-between px-0">
+                         <span> <?php echo htmlspecialchars($prestation['nom']); ?> (<?php echo htmlspecialchars($prestation['prix']); ?>€)</span> 
+                            
                             <form method="POST" class="form-modifier-prestation d-flex align-items-center justify-content-between border rounded p-2
-                             <?php echo $deja_ADD ? 'bg-light' : 'bg-white'; ?>">
+                             <?php echo $isActive ? 'bg-light' : 'bg-white'; ?>">
                                 <span><?php echo htmlspecialchars($prestation['nom']); ?></span>
                                 <input type="hidden" name="id_presta" value="<?php echo $prestation['id']; ?>">
 
-                                <?php if ($deja_ADD) : ?>
+                                <?php if ($isActive) : ?>
                                     <input type="hidden" name="action" value="supprimer">
                                     <button type="submit" class="btn btn-sm btn-danger ">
                                         <i class="bi bi-plus-lg"></i>Supprimer
@@ -215,9 +255,9 @@
                     </thead>
                     <tbody>
                         <tr>
-            <!--affichage du calcul du prix total-->
+                <!--affichage du calcul du prix total-->
                             <td>Hébergement (<?php echo htmlspecialchars($nb_nuits); ?> nuits * <?php echo htmlspecialchars($prix_chambre); ?>€)</td>
-                            <td class="text-end"><?php echo number_format($Prix_total, 2); ?>€</td>
+                            <td class="text-end"><?php echo number_format($total_hebergement, 2); ?>€</td>
                         
                         </tr>
                         <!-- affichage des prestations choisies et leur prix-->
@@ -229,31 +269,45 @@
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
-                        <!-- un scripte qui calcule la remise à appliquer si il y en a-->
-              <!-- affichage de la réduction appliquée-->
-                        <?php if($reduction > 0) :?>
-                            <tr class="text-danger">
-                                <td><i class="bi bi-percent"></i>(-<?php echo htmlspecialchars($reduction); ?>%)</td>
-                                <td class="text-end"><strong>-<?php echo number_format($remise,2); ?>€</strong></td>
+
+                        <!-- affichage de la réduction appliquée -->
+                        <?php if($taux_reduction_reserv > 0) :?>
+                            <tr class="table-warning text-danger">
+                                <td><strong>Réduction saisonnière (<?php echo htmlspecialchars($taux_reduction_reserv); ?>%)</strong></td>
+                                <td class="text-end"><strong>-<?php echo number_format($montant_remise,2); ?>€</strong></td>
                             </tr>
                         <?php endif; ?>
-                        <!-- affichage de l'arrhes si il y en a-->
-                        <?php if($arrhes > 0) : ?>
-                        <tr class="text-primary italic">
-                            <td><i class="bi bi-cash-stack"></i>Arrhes versées </td>
-                            <td class="text-end">-<?php echo number_format($arrhes, 2); ?>€</td>
-                        </tr>
+
+                        <!-- arrhes -->
+                        <?php if($arrhes > 0) :?>
+                            <tr class="table-warning text-danger">
+                                <td><strong>Arrhes versées</strong></td>
+                                <td class="text-end"><strong>-<?php echo number_format($arrhes, 2); ?>€</strong></td>
+                            </tr>
                         <?php endif; ?>
+                        
+                       
                     </tbody>
                      <!--affichage du prix restant à payer-->
                     <tfoot>
                         <tr class="table-dark fs-5">
-                            <td><strong>Prix restant à payer : </strong></td>
-                            <td class="text-end"><strong><?php echo number_format($Prix_total_apres_reduc, 2); ?>€</strong></td>
+                            <td class="fs-5"><strong>Prix restant à payer : </strong></td>
+                            <td class="text-end fs-5"><strong><?php echo number_format($reste_a_payer, 2); ?>€</strong></td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
         </div>
+
+                            <!--Affichage des arrhes versées par le client-->
+        <?php if ($arrhes <= 0) : ?>
+            <div class="alert alert-warning mt-3 border-warning">
+                <i class="bi bi-info-circle me-2"></i> Vous n'avez pas encore versé de garantie.
+            </div>
+        <?php else : ?>
+            <div class="alert alert-success mt-3 border-success">
+                <i class="bi bi-check-circle me-2"></i> Merci d'avoir versé vos arrhes. Nous avons hâte de vous accueillir !
+            </div>
+        <?php endif; ?>
     </div>
 </div>  

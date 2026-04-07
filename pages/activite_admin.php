@@ -6,6 +6,7 @@
 
 // TODO : ajouter une animation fading pour les activité valider 
 // TODO : ne pas afficher des moniteurs inactif 
+// TODO : ajouter un bouton pour revenir à la page d'accueil de l'admin liste des activités
     session_start();
     if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
         header('Location: ../index.php');

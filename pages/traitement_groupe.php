@@ -2,7 +2,7 @@
     /** script permettant de traiter les groupes d'activiter**/
 
     
-
+    // TODO : ajouter un bouton pour revenir à la page d'accueil de l'admin liste des activités
 
 
     session_start();

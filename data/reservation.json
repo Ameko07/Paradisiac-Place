@@ -31,7 +31,11 @@
         "message": "ajout de tes 3 ",
         "reduction": 0,
         "arrhes": 0,
-        "status": "valid\u00e9"
+        "status": "valid\u00e9",
+        "prestations": [
+            1,
+            3
+        ]
     },
     {
         "id_res": 3,
@@ -47,8 +51,8 @@
         ],
         "message": "test 2 et teste d'affichage de commentaite blabla ",
         "reduction": 0,
-        "arrhes": 0,
-        "status": "en attente"
+        "arrhes": 100,
+        "status": "valid\u00e9"
     },
     {
         "id_res": 4,

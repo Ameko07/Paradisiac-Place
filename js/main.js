@@ -92,6 +92,40 @@ $(document).ready(function(){
             $("#zone_tableau").load('pages/admin_valid.php')
     });
 
+    // mise a jour des arrhes depuis le detail reservation admin
+    $(document).on('submit', '.form-update-arrhes', function(event){
+        event.preventDefault();
+
+        let form = $(this);
+        let btn = form.find('button[type="submit"]');
+        let id = form.find('input[name="id_res"]').val();
+
+        btn.prop('disabled', true);
+        $("#admin-retour").html("<div class='text-info'><span class='spinner-border spinner-border-sm text-info'></span> Mise à jour des arrhes...</div>");
+
+        $.ajax({
+            url: 'pages/update_paiement.php',
+            method: 'POST',
+            data: form.serialize(),
+            success: function(response){
+                if (response.trim() === "success") {
+                    $("#admin-retour").html("<div class='alert alert-success py-1'>Arrhes mises à jour avec succès.</div>");
+
+                    // recharge uniquement la ligne de details ouverte
+                    let target = $("#details-" + id).find('.container-details');
+                    target.load('pages/get_reservation_details.php?id=' + id);
+                } else {
+                    $("#admin-retour").html("<div class='alert alert-danger py-1'>ERREUR au niveau du serveur: " + response + "</div>");
+                }
+                btn.prop('disabled', false);
+            },
+            error: function(){
+                $("#admin-retour").html("<div class='alert alert-danger py-1'>ERREUR : Impossible de mettre à jour les arrhes.</div>");
+                btn.prop('disabled', false);
+            }
+        });
+    });
+
     /**gestion des réservations**/
     // bouton examiner
     $(document).on('click', '.btn-examiner', function(event){
