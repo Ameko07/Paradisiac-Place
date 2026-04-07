@@ -1,18 +1,31 @@
 {
     "chambre" : [
         {"id": 1, "nom" : "Bungalow Sable Blanc", "prix": 80, "capacite": 2, "disponible": 5 },
-        {"id": 2, "nom" : "Suite Lagon Turcoise", "prix": 150, "capacite": 4, "disponible": 3 }
+        {"id": 2, "nom" : "Suite Lagon Turcoise", "prix": 150, "capacite": 4, "disponible": 3 },
+        {"id": 3, "nom" : "Chambre Famille Baobab", "prix": 110, "capacite": 5, "disponible": 4 },
+        {"id": 4, "nom" : "Studio Voyageur Vanille", "prix": 60, "capacite": 2, "disponible": 6 },
+        {"id": 5, "nom" : "Villa Océan Premium", "prix": 240, "capacite": 6, "disponible": 2 }
     ],
     "activite" : [
         {"id":1, "nom": "Observation des Lémuriens", "unite" : "demi-journee","prix":40},
         {"id":2, "nom": "Plongée Barrière de Corail","unite" : "heure", "prix":25 },
-        {"id":3, "nom": "Expédition Quad Désert","unite" : "journee", "prix":90 }
+        {"id":3, "nom": "Expédition Quad Désert","unite" : "journee", "prix":90 },
+        {"id":4, "nom": "Balade Pirogue Mangrove", "unite" : "demi-journee", "prix":55},
+        {"id":5, "nom": "Coucher de Soleil Avenue des Baobabs", "unite" : "demi-journee", "prix":35},
+        {"id":6, "nom": "Visite Marché Artisanal de Nosy Be", "unite" : "heure", "prix":20},
+        {"id":7, "nom": "Randonnée Tsingy Rouge", "unite" : "journee", "prix":95},
+        {"id":8, "nom": "Initiation Cuisine Malgache", "unite" : "heure", "prix":30}
         
     ],
     "prestation": [
         {"id":1, "nom": "Navette Aéroport", "prix": 30},
         {"id":2, "nom": "Dîner Fruit de mer", "prix": 25},
-        {"id":3, "nom": "Petit Déjeuner Malgache", "prix": 20}
+        {"id":3, "nom": "Petit Déjeuner Malgache", "prix": 20},
+        {"id":4, "nom": "Pack Lune de Miel", "prix": 70},
+        {"id":5, "nom": "Transfert Inter-îles", "prix": 45},
+        {"id":6, "nom": "Location Masque et Tuba", "prix": 15},
+        {"id":7, "nom": "Massage aux Huiles Locales", "prix": 40},
+        {"id":8, "nom": "Blanchisserie Express", "prix": 12}
     ]
 
 }

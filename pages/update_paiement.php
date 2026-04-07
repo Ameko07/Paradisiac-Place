@@ -1,6 +1,6 @@
 <?php
     /**
-     * Mise a jour des arrhes d'une reservation
+     * Mise a jour des arrhes et reduction d'une reservation 
      * seul l'admin peut le faire
      **/
 
@@ -13,21 +13,33 @@
     // récupération des données envoyées par AJAX
 
     $id_res = $_POST['id_res'] ?? null;
-    $montant_arrhes = $_POST['montant_arrhes'] ?? null;
+    $montant_arrhes = isset($_POST['montant_arrhes']) && $_POST['montant_arrhes'] !== '' ? (float)$_POST['montant_arrhes'] : null;
+    // compatibilité entre ancien nom et nouveau nom du champ reduction
+    $reduction_brute = $_POST['pourcentage_reduc'] ?? ($_POST['pourcentage_reduction'] ?? null);
+    $new_reduction = ($reduction_brute !== null && $reduction_brute !== '') ? (float)$reduction_brute : null;
 
-    // validation des données
+    // Condition de validation de toutes les données reçues
+    // les donnees null recu
     if ($id_res === null || $montant_arrhes === null || $montant_arrhes === '') {
         exit("Données manquantes.");
     }
 
+    // il faut des nombre pour les montants et la reduction
     if (!is_numeric($montant_arrhes)) {
         exit("Montant invalide.");
     }
 
-    // conversion en float et validation du montant
-    $montant_arrhes = (float)$montant_arrhes;
+    // pas de montant d'arrhes négatif et la reduction doit être entre 0 et 100
     if ($montant_arrhes < 0) {
         exit("Le montant des arrhes ne peut pas être négatif.");
+    }
+
+    // les resductions autorisées sont 0, 10, 20 et 50% 
+    if ($new_reduction !== null) {
+        $reductions_autorisees = [0.0, 10.0, 20.0, 50.0];
+        if (!in_array($new_reduction, $reductions_autorisees, true)) {
+            exit("Réduction invalide. Valeurs autorisées : 0, 10, 20, 50.");
+        }
     }
 
     // récupération des résercation 
@@ -41,7 +53,15 @@
     // mise à jour de la reservation avec le montant des arrhes
     foreach ($reservations as $key => $reservation) {
         if ($reservation['id_res'] == $id_res) {
-            $reservations[$key]['arrhes'] = $montant_arrhes;
+            // on met à jour le montant des arrhes dans la reservation 
+            // si une valeure saisie
+            if ($montant_arrhes!== null) {
+                $reservations[$key]['arrhes'] = $montant_arrhes;
+            }
+            if ($new_reduction !== null) {
+                $reservations[$key]['reduction'] = $new_reduction;
+            }
+            
             $trouve = true;
             break;
         }

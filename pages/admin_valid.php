@@ -3,8 +3,7 @@
 
 <?php
 
-// TODO : gerer la connexion quand cliquer sur les autre bouton 
-// TODO : bouton retour vers la liste des reservation dans la page de validation d'une reservation
+// gestion de connexion admin + navigation retour vers la liste des réservations
 
     session_start();
     // vérification que l'utilisateur est bien un admin
@@ -28,17 +27,27 @@
     // la liste des mails déjà utilisé pour faire une réservation
     $mails_reservation = array_column($users, 'email');
 
-    // TODO : FAIRE UNE PAGE POUR LA VALIDATION DES PRESTATION AVEC LES LOGIQUE QUI VONT AVEC 
-    // EXEMPLE : Nombre de peronne suffisante ? bonne date ? avis du client ? age ? etc
-    // TODO : la génération de mot de passe se fera manuellement par l'admin "envoyer un mail au client" 
-    // TODO : peut-être essayer de transformet toute la ligne de la reservation en bouton pour afficher la reservation en détaille (Date qui supperpose à d'autre) et mettre les bouton accepter et refuser DANS la reservation cliqué et la création du mot de passe que l'admin écrira MANUELLEMENT
-    // TODO : et supprimer le bouton détails à la place 
-    // TODO : supprimer le bouton "Valider reservation" dans la bare de navigation ou le remplacer par une autre fonctonnalité revenir sur la liste des reservation
-    // TODO : pas juste bouton accepter ou refuser 
+    
+    
+     
+    
+    
+    
+    
 ?>
 
 <div class="container mt-4">
+    <!-- bouton retour vers la liste des reservation -->
+    <div class="d-flex justify-content-end mb-2">
+        <button class="btn btn-sm btn-outline-secondary btn-retour-liste-res-admin" data-retour-mode="reset-liste">
+            <i class="bi bi-arrow-left"></i> Retour à la liste des réservations
+        </button>
+    </div>
+
     <h3 class="mb-4 text-dark">Validation des réservations</h3>
+
+    <!-- zone de retour admin pour afficher les messages de validation, mot de passe et message mail -->
+    <div id="admin-retour" class="mb-3"></div>
     
     <!-- utilisation de Bootstrap pour le style du tableau -->
 

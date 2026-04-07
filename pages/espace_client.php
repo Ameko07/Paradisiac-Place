@@ -33,6 +33,13 @@
     $json_offres = file_get_contents($fichier_offres);
     $offres = json_decode($json_offres, true) ?: []; // au cas ou le fichier est vide
 
+    // on recupere les activités prévues validées par l'admin
+    $fichier_activites_prevues = '../data/activite_prevue.json';
+    $activites_prevues = [];
+    if (file_exists($fichier_activites_prevues)) {
+        $activites_prevues = json_decode(file_get_contents($fichier_activites_prevues), true) ?: [];
+    }
+
 
     
     // comme un client n'a droit qu'à une reservation , on cehrche sa reservation 
@@ -46,10 +53,23 @@
         }
     }
 
+    // compatibilité avec un ancien format de prestations en objet JSON
+    if ($reservation_client && isset($reservation_client['prestations']) && is_array($reservation_client['prestations'])) {
+        $cles_presta = array_keys($reservation_client['prestations']);
+        $format_assoc = ($cles_presta !== range(0, count($cles_presta) - 1));
+        if ($format_assoc) {
+            $reservation_client['prestations'] = array_values($reservation_client['prestations']);
+        }
+    }
+
     // tableau des prestations à choisir pour le client 
     if (isset($_POST['id_presta']) && $reservation_client) {
-        $id_presta = $_POST['id_presta'];
+        $id_presta = (int)$_POST['id_presta'];
         $action = $_POST['action'] ?? 'ajouter';
+
+        if (!isset($reservation_client['prestations']) || !is_array($reservation_client['prestations'])) {
+            $reservation_client['prestations'] = [];
+        }
 
 
         // si l'action est "ajouter" on rajoute la prestation dans le tableau
@@ -112,10 +132,17 @@
 
     // Les prestations choisies
     $prestations_choisies = $reservation_client['prestations'] ?? [];
+    if (!is_array($prestations_choisies)) {
+        $prestations_choisies = [];
+    }
 
+    // calcul du total des prestations choisies
     $total_presta = 0;
     $details_presta = [];
     $liste_prestations = $offres['prestation'] ?? [];
+
+    // on cherche les prestations choisies dans la liste des prestations 
+    // pour calculer le total et afficher les détails dans la facture
     foreach ($prestations_choisies as $id_presta) {
         foreach ($liste_prestations as $presta) {
             if ($presta['id'] == $id_presta) {
@@ -126,20 +153,59 @@
         }
     }
 
+    // activités validées pour ce client (participants dans activite_prevue.json)
+    $details_activites_validees = [];
+    $total_activites = 0;
+    $id_res_client = (string)($reservation_client['id_res'] ?? '');
+
+    // index des activités de l'offre pour retrouver prix + unite
+    $index_act_offres = [];
+    foreach (($offres['activite'] ?? []) as $act) {
+        $index_act_offres[(string)$act['id']] = $act;
+    }
+
+    // parcours de la liste d'act prevu 
+    foreach ($activites_prevues as $grp) {
+
+    // on vérifie si le client est participant de ce groupe d'activité prévue 
+    // (en comparant l'id de sa reservation avec les participants du groupe)
+        $participants = array_map('strval', $grp['participants'] ?? []);
+        if ($id_res_client === '' || !in_array($id_res_client, $participants, true)) {
+            continue;
+        }
+
+        $act_id = (string)($grp['id_activite'] ?? '');
+        $act_info = $index_act_offres[$act_id] ?? null;
+        if (!$act_info) {
+            continue;
+        }
+
+        // ajout des details de l'acivité validé
+        $details_activites_validees[] = [
+            'nom' => $act_info['nom'],
+            'unite' => $act_info['unite'] ?? 'non précisée',
+            'prix' => (float)($act_info['prix'] ?? 0),
+            'animateur' => $grp['animateur'] ?? 'Non défini',
+            'message' => trim((string)($grp['message'] ?? ''))
+        ];
+        $total_activites += (float)($act_info['prix'] ?? 0);
+    }
+
     
 
 
 
     // calcul du prix total avant réduction
     $total_hebergement = $nb_nuits * $prix_chambre;
-    $Prix_total = $total_hebergement + $total_presta;
+    $Prix_total = $total_hebergement + $total_presta + $total_activites;
 
     // réduction à appliquer (2 reductions existent:
     //  reduction dans Users qui est une reduc de fidelité 
     // et réduction dans reservation qui est une reduc de saisonnalité)
 
     $taux_reduction_reserv = isset($reservation_client['reduction']) ? $reservation_client['reduction'] : 0;
-    $montant_remise = ($Prix_total * $taux_reduction_reserv) / 100; 
+    // selon le sujet la réduction s'applique uniquement sur les prestations
+    $montant_remise = ($total_presta * $taux_reduction_reserv) / 100; 
 
     // apres la reduction 
     $Prix_total_apres_reduc = $Prix_total - $montant_remise;
@@ -147,18 +213,21 @@
     // les arrhes versées par le client
     $arrhes = isset($reservation_client['arrhes']) ? $reservation_client['arrhes'] : 0;
 
+    // total de toutes les lignes en negatif affichees dans la facture
+    $total_deductions = $montant_remise + $arrhes;
+
     // le prix restant à payer
     $reste_a_payer = max(0, $Prix_total_apres_reduc - $arrhes);
 
     
 
 
-// TODO : ajouter une section pour les avis clients et permettre au client de laisser un avis sur son séjour
-// TODO : ajouter une section pour les messages et permettre au client de contacter l'hôtel depuis son espace client
+
+
 
 ?>
 
-<div class="container mt-4">
+<div class="container mt-4 client-page">
     <div class="row align-items-center mb-4">
 <!--Utilisation des col : des colonne pour affichage à gauche et à droite-->
         <div class="col-md-8">
@@ -175,7 +244,7 @@
     
         <div class="col-md-4 text-end text-md-end">
             <!-- un bouton de déconnexion qui redirige vers la page de login et détruit la session-->
-            <a class="btn btn-outline-danger" href="logout.php" >
+            <a class="btn btn-outline-danger" href="pages/logout.php" >
                 <i class="bi bi-box-arrow-left me-2"></i> Déconnexion</a>
         </div>
     </div>
@@ -200,7 +269,7 @@
                 </div>
             </div>
         </div>
-        <div class="card shadow-sm mb-4 ">
+        <div class="card border-0 shadow-sm mb-4 bg-light prestation-card">
             <div class="card-body">
                 <h5 class="border-bottom pb-2 mb-3">Prestations supplémentaires :</h5>
                 <div class="list-group list-group-flush">
@@ -208,20 +277,20 @@
                     <?php foreach ($liste_prestations as $prestation) :
                         $isActive = in_array($prestation['id'], $prestations_choisies);
                         ?>
-                        <div class="list-group-item d-flex align-items-center justify-content-between px-0">
-                         <span> <?php echo htmlspecialchars($prestation['nom']); ?> (<?php echo htmlspecialchars($prestation['prix']); ?>€)</span> 
-                            
-                            <form method="POST" class="form-modifier-prestation d-flex align-items-center justify-content-between border rounded p-2
-                             <?php echo $isActive ? 'bg-light' : 'bg-white'; ?>">
-                                <span><?php echo htmlspecialchars($prestation['nom']); ?></span>
+                                <div class="list-group-item prestation-item d-flex align-items-center justify-content-between px-0">
+                                 <span class="fw-medium"><?php echo htmlspecialchars($prestation['nom']); ?> (<?php echo htmlspecialchars($prestation['prix']); ?>€)</span> 
+                    <!-- Le formulaire a remplir -->
+                                     <form method="POST" class="form-modifier-prestation prestation-action d-flex align-items-center justify-content-between border p-2 <?php echo $isActive ? 'bg-light' : 'bg-white'; ?>">
                                 <input type="hidden" name="id_presta" value="<?php echo $prestation['id']; ?>">
-
+                    <!-- Si la prestation est choisie -->
+                    <!-- On affiche le bouton pour la supprimer -->
                                 <?php if ($isActive) : ?>
                                     <input type="hidden" name="action" value="supprimer">
                                     <button type="submit" class="btn btn-sm btn-danger ">
                                         <i class="bi bi-plus-lg"></i>Supprimer
                                     </button>
                                 <?php else : ?>
+                                <!--Sinon on affiche le bouton pour l'ajouter-->
                                     <input type="hidden" name="action" value="ajouter">
                                     <button type="submit"  class="btn btn-success ">
                                         <i class="bi bi-plus-lg"></i>Ajouter
@@ -270,10 +339,33 @@
                             <?php endforeach; ?>
                         <?php endif; ?>
 
+                        <!-- affichage des activités validées par l'admin -->
+                        <?php if (!empty($details_activites_validees)) : ?>
+                        <!-- on parcourt les activités validées -->
+                            <?php foreach ($details_activites_validees as $actValidee) : ?>
+                                <tr>
+                                    <td>
+                                    <!-- affichage de l'icône de l'activité -->
+                                        <i class="bi bi-compass text-primary me-2"></i>
+                                        <?php echo htmlspecialchars($actValidee['nom']); ?>
+                                        <small class="text-muted">(<?php echo htmlspecialchars($actValidee['unite']); ?>, animateur : <?php echo htmlspecialchars($actValidee['animateur']); ?>)</small>
+                                        <!-- affichage du message de l'admin pour cette activité si il existe -->
+                                        <?php if (!empty($actValidee['message'])) : ?>
+                                            <div class="small text-secondary mt-1">
+                                                <i class="bi bi-chat-left-text"></i> <?php echo htmlspecialchars($actValidee['message']); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
+                            <!-- affiche  prix de chaque activité -->
+                                    <td class="text-end"><?php echo number_format($actValidee['prix'], 2); ?>€</td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
                         <!-- affichage de la réduction appliquée -->
                         <?php if($taux_reduction_reserv > 0) :?>
                             <tr class="table-warning text-danger">
-                                <td><strong>Réduction saisonnière (<?php echo htmlspecialchars($taux_reduction_reserv); ?>%)</strong></td>
+                                <td><strong>Réduction sur prestations (<?php echo htmlspecialchars($taux_reduction_reserv); ?>%)</strong></td>
                                 <td class="text-end"><strong>-<?php echo number_format($montant_remise,2); ?>€</strong></td>
                             </tr>
                         <?php endif; ?>
@@ -283,6 +375,14 @@
                             <tr class="table-warning text-danger">
                                 <td><strong>Arrhes versées</strong></td>
                                 <td class="text-end"><strong>-<?php echo number_format($arrhes, 2); ?>€</strong></td>
+                            </tr>
+                        <?php endif; ?>
+
+                        <!-- résumé global des lignes négatives de la facture -->
+                        <?php if($total_deductions > 0) :?>
+                            <tr class="table-light text-danger">
+                                <td><strong>Total déductions (lignes négatives)</strong></td>
+                                <td class="text-end"><strong>-<?php echo number_format($total_deductions, 2); ?>€</strong></td>
                             </tr>
                         <?php endif; ?>
                         

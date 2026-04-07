@@ -1,19 +1,181 @@
-/* Personnalisation du thème Madagascar */
+/* Thème MadaDream : vert tropical + sable */
 
-body {
-    background-color: #f8f9fa; /* Un gris très clair pour reposer les yeux */
+:root {
+    --mada-vert: #146b4f;
+    --mada-vert-fonce: #0b4b38;
+    --mada-sable: #f4e3b2;
+    --mada-fond: #f4f7f3;
+    --mada-hero-image: url('background.jpg');
 }
 
+/* Base */
+body {
+    background-color: var(--mada-fond);
+}
+
+/* Navbar globale */
 .navbar {
-    border-bottom: 3px solid #ffc107; /* Une ligne dorée sous le menu (couleur sable) */
+    border-bottom: 3px solid #ffc107;
+}
+
+.navbar.navbar-dark {
+    background: linear-gradient(90deg, #083d2f 0%, #0f5e46 100%) !important;
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .nav-link {
+    color: #f6f4ec !important;
+}
+
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link:focus {
+    color: var(--mada-sable) !important;
+}
+
+.btn-primary,
+.bg-primary {
+    background-color: var(--mada-vert) !important;
+    border-color: var(--mada-vert) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #0f5a43 !important;
+    border-color: #0f5a43 !important;
+}
+
+.text-primary {
+    color: var(--mada-vert) !important;
 }
 
 h1 {
-    color: #198754; /* Le vert de Madagascar pour les titres principaux */
+    color: var(--mada-vert);
     font-weight: bold;
+}
+
+.landing-hero {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    background-image: linear-gradient(rgba(11, 75, 56, 0.6), rgba(11, 75, 56, 0.6)), var(--mada-hero-image);
+    background-size: cover;
+    background-position: center;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+}
+
+.landing-hero-content {
+    color: #ffffff;
+    padding: 2.2rem;
+    max-width: 760px;
+}
+
+.landing-hero-title {
+    color: #ffffff;
+    font-size: clamp(1.8rem, 4vw, 3.1rem);
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+}
+
+.landing-hero-subtitle {
+    font-size: 1.05rem;
+    opacity: 0.95;
+}
+
+.landing-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+}
+
+.btn-mada-main {
+    background-color: var(--mada-sable);
+    border: none;
+    color: #2f2a1e;
+    font-weight: 700;
+}
+
+.btn-mada-main:hover {
+    background-color: #ecd897;
+}
+
+.btn-mada-outline {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btn-mada-outline:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+.landing-section {
+    margin-bottom: 1.4rem;
+}
+
+.landing-card {
+    border: 1px solid #d8e9e2;
+    border-radius: 14px;
+    height: 100%;
+}
+
+.landing-card .card-title {
+    color: var(--mada-vert-fonce);
+}
+
+.landing-reasons {
+    border-radius: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #f2f8f6 100%);
+    border: 1px solid #d8e9e2;
+    padding: 1rem;
+}
+
+.landing-reasons li {
+    margin-bottom: 0.35rem;
+}
+
+.landing-bottom-cta {
+    margin-top: 2rem;
+    margin-bottom: 1.4rem;
+    border-radius: 16px;
+    background: var(--mada-vert-fonce);
+    color: #ffffff;
+    padding: 1.2rem;
+}
+
+.landing-bottom-cta h3 {
+    color: #ffffff;
 }
 
 #admin-retour {
     font-weight: 500;
     transition: all 0.3s ease;
+}
+
+.client-page {
+    background-image: linear-gradient(rgba(244, 247, 243, 0.55), rgba(244, 247, 243, 0.55)), url('lemurien.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 18px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.client-page .prestation-card {
+    background: transparent;
+}
+
+.client-page .prestation-action {
+    border-radius: 14px;
 }

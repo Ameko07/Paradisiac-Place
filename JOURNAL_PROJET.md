@@ -1,5 +1,148 @@
 # 📋 Journal Complet du Projet PARADISIAC-PLACE
 
+## ✅ MISE A JOUR FINALE (VERSION RAPPORT + ORAL)
+
+### Contexte
+Ce bloc fait foi pour la version finale du projet, à utiliser dans le rapport écrit et la soutenance.
+Les sections historiques plus bas restent utiles pour la traçabilité, mais l'état réel actuel est résumé ici.
+
+### 1) Objectif du projet
+Développer une plateforme web de réservation de séjours à Madagascar avec :
+- une interface client de demande de réservation,
+- une validation administrative,
+- une gestion financière (arrhes et réduction),
+- un espace client avec facture,
+- une gestion d'activités encadrées.
+
+### 2) Architecture technique retenue
+- Front : HTML/CSS + Bootstrap + jQuery
+- Back : PHP procédural
+- Persistance : fichiers JSON
+- Navigation : chargement dynamique AJAX (sans rechargement complet de la page)
+
+### 3) Fonctionnalités effectivement livrées
+
+#### 3.1 Côté client
+- Dépôt d'une demande de réservation
+- Connexion client (après validation admin)
+- Espace client avec affichage de la facture
+- Détail de la facture : hébergement, prestations, activités validées
+- Déductions visibles en lignes négatives (arrhes, réduction)
+
+#### 3.2 Côté administration
+- Liste des réservations en attente
+- Validation/refus d'une réservation
+- Génération automatique d'un mot de passe à la validation
+- Message prêt à copier pour envoi au client (email + mot de passe)
+- Mise à jour des données financières : arrhes + réduction
+- Boutons de retour cohérents vers la liste des réservations
+
+#### 3.3 Gestion des activités
+- Consultation des demandes d'activités par jour
+- Filtrage par date + réinitialisation du filtre
+- Validation des groupes avec animateur
+- Règles min/max de participants selon l'activité
+- Exclusion des animateurs déjà affectés sur le même créneau
+- Section distincte des groupes déjà validés
+- Message commun d'activité transmis au client (visible dans facture)
+
+### 4) Règles métier importantes appliquées
+- Réduction limitée aux valeurs du sujet : 0, 10, 20, 50
+- Réduction appliquée aux prestations (et non au total global)
+- Arrhes affichées en déduction
+- Vérifications robustes des données JSON (formats anciens pris en charge)
+
+### 5) Correctifs majeurs réalisés pendant le projet
+- Correction de la persistance de session admin lors de la navigation
+- Correction du chargement dynamique des pages admin
+- Correction du comportement de suppression visuelle des lignes validées
+- Correction d'une erreur de clé manquante sur le nombre de personnes
+- Correction du lien de déconnexion client
+- Amélioration de la fiabilité du bouton copier message admin
+
+### 6) État des données de test
+Les fichiers JSON ont été nettoyés et enrichis pour la démo :
+- scénarios en attente et validés,
+- différents types d'hébergement,
+- prestations variées,
+- activités avec groupes et animateurs,
+- cohérence email entre réservations et utilisateurs.
+
+### 7) Limites assumées
+- Stockage JSON (pas de base SQL)
+- Pas de chiffrement avancé ni back-office multi-profils complet
+- La modélisation des activités reste orientée démonstration pédagogique
+
+### 8) Conclusion technique
+Le cahier des charges pédagogique est couvert sur les flux essentiels :
+demande de réservation, validation admin, création de compte client,
+suivi financier, gestion des activités et restitution facture côté client.
+
+---
+
+## 🎤 Trame orale 5 minutes (prête à dérouler)
+
+### Minute 0:00 - 0:40 : Introduction
+"Notre projet PARADISIAC-PLACE est une application web de réservation de séjours à Madagascar. Nous avons choisi PHP, jQuery, Bootstrap et un stockage JSON pour respecter le cadre du cours et démontrer un flux complet client/admin."
+
+### Minute 0:40 - 1:40 : Parcours client
+1. Montrer l'accueil.
+2. Aller sur la réservation et soumettre une demande.
+3. Expliquer que la réservation passe en statut en attente.
+
+Phrase clé :
+"Le client initie le processus, mais la réservation ne devient exploitable qu'après validation administrative."
+
+### Minute 1:40 - 3:00 : Parcours admin
+1. Ouvrir l'interface admin.
+2. Montrer la liste des réservations en attente.
+3. Ouvrir le détail, mettre arrhes/réduction, valider.
+4. Montrer le message généré avec identifiants (copie prête).
+
+Phrase clé :
+"La validation admin transforme une demande en réservation active et crée automatiquement l'accès client."
+
+### Minute 3:00 - 4:10 : Activités et planning
+1. Aller sur la gestion des activités.
+2. Filtrer par date.
+3. Valider un groupe avec animateur.
+4. Montrer les groupes déjà validés.
+
+Phrase clé :
+"Nous appliquons des contraintes métier concrètes : capacité des groupes et disponibilité des animateurs."
+
+### Minute 4:10 - 4:50 : Espace client et facture
+1. Se connecter en client validé.
+2. Afficher la facture : hébergement, prestations, activités.
+3. Pointer les lignes négatives arrhes/réduction.
+
+Phrase clé :
+"Le client voit un récapitulatif transparent des coûts et des déductions."
+
+### Minute 4:50 - 5:00 : Conclusion
+"Le projet est fonctionnel de bout en bout, respecte l'architecture demandée, et montre une logique métier cohérente avec une expérience utilisateur fluide."
+
+---
+
+## 🧪 Checklist démo soutenance
+
+Avant passage :
+- Vérifier que les JSON sont lisibles (pas de corruption)
+- Vérifier au moins 1 réservation en attente
+- Vérifier au moins 1 réservation validée avec compte client
+- Vérifier au moins 1 activité validée avec animateur
+
+Pendant démo :
+- Montrer un flux complet client -> admin -> client
+- Montrer au moins une mise à jour financière
+- Montrer le message de validation copiable
+- Montrer le filtre activités et les groupes validés
+
+Plan B si incident :
+- Recharger la page principale
+- Revenir à un jeu de données connu
+- Rejouer le scénario minimal : 1 réservation + 1 validation + 1 connexion client
+
 ## 🏖️ Vue d'ensemble du projet
 
 **Nom du projet :** PARADISIAC-PLACE  
@@ -425,3 +568,59 @@ $(document).on('submit', '#form-reservation', function(){...})
 **Document généré le :** 27 mars 2026  
 **Dernière mise à jour :** Voir la structure actuelle du projet  
 **Auteur :** L'équipe de développement
+
+---
+
+## ✅ Campagne de tests finale (Avril 2026)
+
+### Tests Connexion et rôles
+- [x] Connexion admin valide -> ouverture espace admin sans rechargement complet.
+- [x] Connexion client valide -> ouverture espace client.
+- [x] Session admin active + clic Client/Réserver -> garde-fou affiché, session admin conservée.
+
+### Tests Réservations admin
+- [x] Validation d'une réservation -> ligne retirée du tableau en attente.
+- [x] Création compte client lors de validation -> mot de passe aléatoire généré côté serveur.
+- [x] Message prêt à copier affiché (URL + identifiant + mot de passe).
+
+### Tests Paiement et facture
+- [x] Mise à jour arrhes via admin -> visible côté facture client en ligne négative.
+- [x] Réduction limitée à 0/10/20/50.
+- [x] Réduction appliquée uniquement sur les prestations.
+
+### Tests Activités
+- [x] Vue admin "demandes du jour" fonctionnelle avec filtre date.
+- [x] Statut satisfaite/non satisfaite affiché.
+- [x] Non satisfaite reportée sur les jours du séjour tant que non validée.
+- [x] Règles métiers de groupe appliquées (min/max participants selon activité).
+- [x] Message activité saisi par admin et visible par les participants côté client.
+
+### Tests Robustesse JSON
+- [x] Format legacy des prestations normalisé (objet -> tableau).
+- [x] Ajout/suppression de prestations stable après normalisation.
+
+---
+
+## 🎤 Checklist Démo Orale (5 minutes)
+
+### Minute 1 - Présentation rapide
+- [ ] Présenter le concept du lieu de rêve et les rôles (client / admin).
+- [ ] Montrer que l'application est principalement mono-page (chargements AJAX).
+
+### Minute 2 - Parcours client
+- [ ] Faire une demande de réservation (nom, email, dates, nb pers, activités).
+- [ ] Montrer la confirmation côté interface.
+
+### Minute 3 - Parcours admin
+- [ ] Ouvrir validation des réservations et examiner une demande.
+- [ ] Valider la réservation et montrer : mot de passe aléatoire + message prêt à copier.
+
+### Minute 4 - Facture client
+- [ ] Se connecter en client avec les identifiants générés.
+- [ ] Montrer la facture : hébergement + prestations + activités validées.
+- [ ] Montrer les lignes négatives : réduction prestations + arrhes.
+
+### Minute 5 - Activités et règles métier
+- [ ] Ouvrir la gestion des activités du jour (filtre date).
+- [ ] Montrer une contrainte min/max participants (refus puis succès).
+- [ ] Montrer le message d'activité visible dans la facture des participants.

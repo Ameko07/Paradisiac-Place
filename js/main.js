@@ -1,6 +1,9 @@
 
 $(document).ready(function(){
 
+    
+    $('#main-content').load('pages/accueil.php');
+
 
     /**---------------DEBUT PARTIE ACCUEIL --------------------**/
     // accueil : l'accueil s'affiche de base , mais se réaffiche quand on reviens en appuyant sur le bouton accueil 
@@ -19,28 +22,70 @@ $(document).ready(function(){
         $('#main-content').load('pages/accueil.php');
     });
 
+    // page de présentation détaillée des activités et prestations
+    $('#menu-decouvrir').click(function(event){
+        event.preventDefault();
+        $('#main-content').load('pages/decouvrir.php');
+    });
+
+    // boutons CTA de l'accueil/découvrir
+    $(document).on('click', '.btn-go-reserver', function(event){
+        event.preventDefault();
+        $('#menu-reserver').trigger('click');
+    });
+
+    $(document).on('click', '.btn-go-client', function(event){
+        event.preventDefault();
+        $('#menu-client').trigger('click');
+    });
+
+    $(document).on('click', '.btn-go-decouvrir, #btn-retour-accueil', function(event){
+        event.preventDefault();
+
+        if ($(this).hasClass('btn-go-decouvrir')) {
+            $('#main-content').load('pages/decouvrir.php');
+        } else {
+            $('#main-content').load('pages/accueil.php');
+        }
+    });
+
 
     /**------FIN PARTIE ACCUEIL**/
 
     /**----- PARTIE ADMIN -----**/
-
+    /**-------------Partie Login --------------**/
     // page de l'administration à load par clique sur le bouton en haut à droite
+
     $('#menu-admin').click(function(event){
         event.preventDefault();
-        // on teste d'abord si l'admin est connecté avant de charger la page admin
-        // chargement de la page d'authentification de l'admin dans la div central
-        $('#main-content').load('pages/login.php', function(){
-            // chargement du formulaire perso pour l'admin
-            $('#type-connexion').val('admin');
-            $('#login-header').removeClass('bg-primary').addClass('bg-dark');
-            $('#login-title').text('Espace Admin');
-            $('#btn-login').removeClass('bg-primary').addClass('btn-dark');
-            $('#login-footer').hide();
-    
+
+        // on verifie d'abord l'etat de la session comme pour le menu client
+        $.get('pages/check_session.php', function(role){
+            if (role.trim() === "admin") {
+                // si admin deja connecte on ouvre directement l'espace admin
+                $('#main-content').load('admin.php', function(response,status,xhr){
+                    if (status == "success"){
+                        $("#zone_tableau").load('pages/admin_valid.php');
+                    }
+                    else{
+                        $("#main-content").html("<p class='text-danger'> ERREUR : Impossible de charger l'espace admin.</p>");
+                    }
+                });
+            } else {
+                // sinon on charge la page d'authentification de l'admin
+                $('#main-content').load('pages/login.php', function(){
+                    // chargement du formulaire perso pour l'admin
+                    $('#type-connexion').val('admin');
+                    $('#login-header').removeClass('bg-primary').addClass('bg-dark');
+                    $('#login-title').text('Espace Admin');
+                    $('#btn-login').removeClass('bg-primary').addClass('btn-dark');
+                    $('#login-footer').hide();
+                });
+            }
         });
-    
     });
 
+// gestion de la soumission du formulaire de connexion pour l'admin et le client
     $(document).on('submit', '#form-login', function(event){
         // on emppeche le navigateur de suivre le lien
         event.preventDefault();
@@ -55,7 +100,7 @@ $(document).ready(function(){
 
             if (res === "success_admin"){
                 // on load la page admin 
-                $('#main-content').load('../admin.php', function(response,status,xhr){
+                $('#main-content').load('admin.php', function(response,status,xhr){
                     if (status == "success"){
                         // injection du tableau de validation des reservation pour l'admin 
                         $("#zone_tableau").load('pages/admin_valid.php');
@@ -83,6 +128,12 @@ $(document).ready(function(){
         }
         });
     });
+
+    /** --------FIN PARTIE LOGIN--------***/
+
+    /**------- PARTIE VALIDATION DES RESERVATIONS -------**/
+
+    /** Bouton de menu de validation des réservations **/ 
 
     $(document).on('click', '#menu-valid-res', function(event){
         // on emppeche le navigateur de suivre le lien
@@ -126,6 +177,44 @@ $(document).ready(function(){
         });
     });
 
+    // mise a jour paiement : arrhes et reduction depuis le detail reservation admin
+    $(document).on('submit', '.form-update-paiement', function(e) {
+        e.preventDefault();
+
+        // récupération du formulaire, du bouton de submit et de l'id de la réservation
+        let form = $(this);
+        let btn = form.find('button[type="submit"]');
+        let id = form.find('input[name="id_res"]').val();
+
+
+        // desactivation du bouton pour éviter les double clics et message de chargement
+        btn.prop('disabled', true);
+        $("#admin-retour").html("<div class='text-info'><span class='spinner-border spinner-border-sm text-info'></span> Mise à jour du paiement...</div>");
+
+        // appel ajax pour mettre à jour les arrhes et la reduction de la reservation
+        $.ajax({
+            url: 'pages/update_paiement.php',
+            method: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                if (response.trim() === "success") {
+                    $("#admin-retour").html("<div class='alert alert-success py-1'>Paiement mis à jour !</div>");
+
+                    // recharge uniquement la ligne de details ouverte pour mettre à jour les arrhes et la reduction
+                    let target = $("#details-" + id).find('.container-details');
+                    target.load('pages/get_reservation_details.php?id=' + id);
+                } else {
+                    $("#admin-retour").html("<div class='alert alert-danger py-1'>ERREUR au niveau du serveur: " + response + "</div>");
+                }
+                btn.prop('disabled', false);
+            },
+            error: function(){
+                $("#admin-retour").html("<div class='alert alert-danger py-1'>ERREUR : Impossible de mettre à jour le paiement.</div>");
+                btn.prop('disabled', false);
+            }
+        });
+    });
+
     /**gestion des réservations**/
     // bouton examiner
     $(document).on('click', '.btn-examiner', function(event){
@@ -155,19 +244,60 @@ $(document).ready(function(){
 
 
     }); 
+
+
+    // bouton retour vers la liste des reservation dans la page de validation / planning / activité
+    $(document).on('click', '.btn-retour-liste-res-admin', function(event){
+        event.preventDefault();
+
+        // on récupère le mode de retour pour savoir quelle page charger ,
+        //  par défaut on charge la liste des reservation à valider
+        let mode = $(this).data('retour-mode') || 'admin-liste';
+
+        // les différentes fonctions de retour selon le mode
+        let couloirs_admin = {
+
+            // pour le mode "reset-liste" on ne recharge pas la page admin ,
+            //  mais on replie juste les détails de reservation ouvert et on remonte en haut du tableau
+            "reset-liste": function(){
+                // on replie tout les details de reservation ouvert
+                $("tr[id^='details-']").addClass('d-none');
+
+                // retour visuel en haut du tableau
+                let ancre = $('#table-reservations').closest('.container');
+                if (ancre.length){
+                    $('html, body').animate({ scrollTop: ancre.offset().top - 20 }, 220);
+                }
+            },
+            "admin-liste": function(){
+                // on recharge la page admin puis la liste des reservations à valider
+                $('#main-content').load('admin.php', function(response,status,xhr){
+                    if (status == "success"){
+                        $("#zone_tableau").load('pages/admin_valid.php');
+                    }
+                    else{
+                        $("#main-content").html("<p class='text-danger'> ERREUR : Impossible de revenir vers la liste des réservations.</p>");
+                    }
+                });
+            }
+        };
+
+        // si mode inconnu on tente la voie normale admin-liste
+        (couloirs_admin[mode] || couloirs_admin["admin-liste"])();
+    });
                 
     
-
+    /** BOUTON DE VALIDATION DES RESERVATIONS **/
     // pour le fichier admin_valid.php
     // bouton accepter reservation pour l'admin 
     // tableau chargé dynamiquement 
+
     $(document).on('click', '.btn-valider', function(){
 
         // récupération de l'id de la reservation à valider
         let btn = $(this);
         let id  = btn.data('id');
         let mailClient = btn.data('email');
-        let mdp = btn.data('mdp');
         
 
         // desactivation du bouton pour les double clic
@@ -186,20 +316,82 @@ $(document).ready(function(){
             data: { 
                 id: id,
                 mail: mailClient,
-                mdp: mdp,
                 action: 'valider',
                 
             },
             success: function(response){
                 // l'utilisation de trim permet de supprimer les espaces inutiles et problématiques
-                if(response.trim() === "success"){
+                // variable payload pour stocker la réponse du serveur après tentative de parsing en JSON
+                let payload = null;
+                let reponseTexte = (response || "").toString();
+                try {
+                    payload = JSON.parse(reponseTexte);
+                } catch(e) {
+                    payload = null;
+                }
+
+                // secours si la reponse contient du texte parasite autour du json
+                
+                /*if (!payload) {
+                    let debutJson = reponseTexte.indexOf('{');
+                    let finJson = reponseTexte.lastIndexOf('}');
+                    if (debutJson !== -1 && finJson !== -1 && finJson > debutJson) {
+                        try {
+                            payload = JSON.parse(reponseTexte.substring(debutJson, finJson + 1));
+                        } catch(err2) {
+                            payload = null;
+                        }
+                    }
+                }*/
+
+                // si tout est OK 
+                if((payload && payload.status === "success") || reponseTexte.trim() === "success" || reponseTexte.indexOf('"status":"success"') !== -1){
                     // affichage du message de succès
-                    $("#admin-retour").html("<div class='alert alert-success py-1'> Réservation validée avec succès ! et Membre confirmé</div>");
+                    if (payload && payload.password) {
+                        let basePath = window.location.pathname.split('/').slice(0, -1); // on enlève le dernier segment (admin_valid.php)
+                        basePath.pop();
+                        let urlConnexion = window.location.origin + basePath.join('/') + '/index.php';
+
+                        let messageMail =
+                            "Bonjour " + (payload.nom || "Client") + ",\n\n" +
+                            "Votre réservation a été validée.\n" +
+                            "Vous pouvez vous connecter à l'espace client avec les informations suivantes :\n\n" +
+                            "URL : " + urlConnexion + "\n" +
+                            "Identifiant : " + payload.email + "\n" +
+                            "Mot de passe : " + payload.password + "\n\n" +
+                            "À bientôt.";
+                        
+                        // affichage du message de succès avec les informations de connexion pour le client 
+                        // et un textarea prêt à copier pour l'admin 
+                        $("#admin-retour").html(
+                            "<div class='alert alert-success py-1 mb-2'>" +
+                            "Réservation validée avec succès !<br>" +
+                            "Compte créé pour : <strong>" + payload.email + "</strong><br>" +
+                            "Mot de passe généré : <strong>" + payload.password + "</strong>" +
+                            "</div>" +
+                            "<div class='card border-success'>" +
+                                "<div class='card-body py-2'>" +
+                                    "<label class='form-label small fw-bold mb-1'>Message prêt à copier dans votre mail :</label>" +
+                                    "<textarea class='form-control form-control-sm mail-ready-admin' rows='8' readonly></textarea>" +
+                                    "<button type='button' class='btn btn-sm btn-outline-success mt-2 btn-copier-mail-admin'>Copier le message</button>" +
+                                "</div>" +
+                            "</div>"
+                        );
+
+                        $("#admin-retour .mail-ready-admin").val(messageMail);
+                    } else {
+                        $("#admin-retour").html("<div class='alert alert-success py-1'> Réservation validée avec succès ! et Membre confirmé</div>");
+                    }
                     
                     // on supprime la ligne de la réservation validée du tableau
-                    $(`#row-${id} , #details-${id}`).fadeOut(500, function(){
+                    $(`#row-${id}, #details-${id}`).fadeOut(500, function(){
                         $(this).remove(); // suppression de la ligne après l'animation de disparition
                     });
+
+                    // sécurité : au cas ou fadeOut ne retire pas bien la ligne
+                    setTimeout(function(){
+                        $(`#row-${id}, #details-${id}`).remove();
+                    }, 650);
                 }else{ 
                     //sinon une erreur est affichée
                     $("#admin-retour").html("<div class='alert alert-danger py-1'> ERREUR au niveau du serveur: " + response + "</div>");
@@ -216,6 +408,78 @@ $(document).ready(function(){
 
        
     });
+
+    // bouton copier du message mail admin
+    $(document).on('click', '.btn-copier-mail-admin', function(event){
+        event.preventDefault();
+
+        // on cible la zone de texte qui contient le message à copier
+        let zone = $(this).closest('.card').find('.mail-ready-admin');
+        let texte = zone.val() || "";
+
+        // si le texte est vide on ne fait rien pour éviter de copier un message vide dans le presse-papiers
+        if (!texte) {
+            return;
+        }
+
+        // copie du texte dans le presse-papiers en utilisant l'API Clipboard,
+        //  sinon fallback à la méthode de sélection et execCommand : qui veut dire 
+        // "exécuter la commande de copie" pour les anciens navigateurs
+        let annoncerSucces = function(){
+            $("#admin-retour").prepend("<div class='alert alert-info py-1 mb-2'>Message copié dans le presse-papiers.</div>");
+        };
+
+        let annoncerErreur = function(){
+            $("#admin-retour").prepend("<div class='alert alert-danger py-1 mb-2'>Impossible de copier automatiquement. Sélectionnez le texte manuellement.</div>");
+        };
+
+        // vérification de la disponibilité de l'API Clipboard et 
+        // tentative de copie
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texte)
+                .then(annoncerSucces)
+                .catch(function(){
+
+                    // en cas d'échec de l'API Clipboard, 
+                    // on tente la méthode de secours qui consiste 
+                    // à créer un textarea temporaire pour sélectionner 
+                    // le texte et utiliser execCommand('copy')
+                    let temp = document.createElement('textarea');
+                    temp.value = texte;
+                    temp.setAttribute('readonly', '');
+                    temp.style.position = 'fixed';
+                    temp.style.left = '-9999px';
+                    document.body.appendChild(temp);
+                    temp.select();
+                    let ok = document.execCommand('copy');
+                    document.body.removeChild(temp);
+                    if (ok) {
+                        annoncerSucces();
+                    } else {
+                        annoncerErreur();
+                    }
+                });
+        } else {
+
+            // fallback pour les anciens navigateurs : 
+            // on crée un textarea temporaire pour sélectionner le texte et utiliser execCommand('copy')
+            let temp = document.createElement('textarea');
+            temp.value = texte;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'fixed';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.select();
+            let ok = document.execCommand('copy');
+            document.body.removeChild(temp);
+            if (ok) {
+                annoncerSucces();
+            } else {
+                annoncerErreur();
+            }
+        }
+    });
+
      // refuser la reservation
     $(document).on('click', '.btn-refuser', function(){
         // récupération de l'id de la reservation à refuser
@@ -271,7 +535,7 @@ $(document).ready(function(){
         });
     });
 
-    /** gestion des activiter et des groupes**/
+    /** --------gestion des activiter et des groupes-------------**/
     
     $(document).on('submit', '.form-groupe-activite', function(event){
         event.preventDefault();
@@ -319,16 +583,24 @@ $(document).ready(function(){
         // on emppeche le navigateur de suivre le lien 
         event.preventDefault();
 
-        // charger le fichier de reservation avec ajax
-        // en gros lancer tout le contenue dans la div central
-        $('#main-content').load('pages/reservation.php', function(response,status,xhr){
-            
-            // en cas d'erreur de chargement du fichier on renvoie error
-            if (status == "error"){
-                $("#main-content").html("<p class='text-danger'> ERREUR :  Impossible de charger le formulaire.</p>");
-
+        // garde-fou : si admin connecté, on évite de quitter son espace par erreur
+        $.get('pages/check_session.php', function(role){
+            if (role.trim() === "admin") {
+                alert("Vous êtes connecté en admin. Utilisez le menu Admin ou déconnectez-vous pour tester une réservation client.");
+                return;
             }
 
+            // charger le fichier de reservation avec ajax
+            // en gros lancer tout le contenue dans la div central
+            $('#main-content').load('pages/reservation.php', function(response,status,xhr){
+                
+                // en cas d'erreur de chargement du fichier on renvoie error
+                if (status == "error"){
+                    $("#main-content").html("<p class='text-danger'> ERREUR :  Impossible de charger le formulaire.</p>");
+
+                }
+
+            });
         });
     });
 
@@ -365,6 +637,35 @@ $(document).ready(function(){
             }
         })
 
+
+    // filtre de date pour la vue journaliere des demandes d'activite
+    $(document).on('click', '.btn-filtre-activite-admin', function(event){
+        event.preventDefault();
+
+        let form = $(this).closest('.form-filtre-date-activite-admin');
+        let dateJour = form.find('input[name="date_jour"]').val() || '';
+        let url = 'pages/activite_admin.php';
+
+        if (dateJour) {
+            url += '?date_jour=' + encodeURIComponent(dateJour);
+        }
+
+        $('#main-content').load(url, function(response, status, xhr){
+            if (status == "error"){
+                $("#main-content").html("<p class='text-danger'> ERREUR : Impossible de filtrer la gestion des activités.</p>");
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-reset-filtre-activite-admin', function(event){
+        event.preventDefault();
+
+        $('#main-content').load('pages/activite_admin.php', function(response, status, xhr){
+            if (status == "error"){
+                $("#main-content").html("<p class='text-danger'> ERREUR : Impossible de réinitialiser le filtre des activités.</p>");
+            }
+        });
+    });
     });
 
 
@@ -425,8 +726,8 @@ $(document).ready(function(){
     
 /** --- PARTIE CLIENT  -----**/
 
-/** --- PARTIE CONNEXION LOGIN-CLIENT  -----**/
-// TODO  : faire la facturation estimé puis celui de du client connecté dans son espace client 
+/** --- PARTIE CONNEXION LOGIN  -----**/
+
     $('#menu-client').click(function(event){
         event.preventDefault();
 
@@ -434,6 +735,9 @@ $(document).ready(function(){
             if (role.trim() === "client"){
                     // si le client est déjà connecté on le redirige vers son espace client
                     $('#main-content').load('pages/espace_client.php');
+            } else if (role.trim() === "admin") {
+                // cas spécial pour éviter l'impression de deconnexion admin
+                alert("Session admin active. Déconnectez-vous d'abord si vous voulez ouvrir l'espace client.");
             }else{
                     // sinon on charge la page de connexion pour le client
                     

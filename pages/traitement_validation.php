@@ -19,7 +19,6 @@
 
     // variable mail car js envoie mail et non email pour éviter les confusions avec les variables PHP
     $mail = $_POST['mail'] ?? ''; // mail du client pour vérifier s'il est déjà membre
-    $mdp_client = $_POST['mdp'] ?? ''; // mot de passe du clinet si la reservation est validé pour créer le compte client
     $action = $_POST['action'] ?? ''; //valider ou refuser
 
     $path_reservation = "../data/reservation.json";
@@ -66,14 +65,15 @@
                     // on vérifie si le mail du client existe déjà dans le fichier JSON des users
                     $json_users = file_get_contents($path_users);
                     $users = json_decode($json_users, true) ?: []; // au cas ou le fichier est vide 
-                    $emailsPossede = array_column($users, 'email'); // on vérifie si le mail du client existe déjà dans le fichier JSON des users
                     $existe =false;
+                    $mdp_genere = '';
                     // on vérifie si le mail du client existe déjà dans le fichier JSON des users
 
                     // mise à jour de existe
                     foreach ($users as $user) {
                         if ($user['email'] === $mail) {
                             $existe = true;
+                            $mdp_genere = $user['mdp'] ?? '';
                             break;
                         }
                     }
@@ -95,11 +95,18 @@
                         $next_id = ($last_user['id_c']  ?: 0) + 1; 
                     }
 
+                    // generation d'un mot de passe aleatoire 
+                    $alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+                    $longueur_mdp = 10;
+                    for ($i = 0; $i < $longueur_mdp; $i++) {
+                        $mdp_genere .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+                    }
+
                     $nouveau_client = array(
                         'id_c' => $next_id,
                         'nom' => $reserv_info['nom'],
                         'email' => $reserv_info['email'],
-                        'mdp' => 'mada123',
+                        'mdp' => $mdp_genere,
                         'role' => 'client',
                         'id_res' => $idValider,
                         'prestation' => [],
@@ -126,9 +133,20 @@
                 if (flock($flockOp, LOCK_EX)) {
                     fwrite($flockOp, json_encode($reservations, JSON_PRETTY_PRINT));
                     flock($flockOp, LOCK_UN);
-
-                    ob_clean();
-                    echo "success";
+                    // si l'action est de valider la réservation, 
+                    // on retourne un JSON avec le status de la validation, 
+                    // le mail du client, le mot de passe généré et si le compte existait déjà ou pas
+                    if ($action === 'valider') {
+                        echo json_encode([
+                            'status' => 'success',
+                            'nom' => $reserv_info['nom'] ?? '',
+                            'email' => $mail,
+                            'password' => $mdp_genere,
+                            'compteExistant' => $existe
+                        ]);
+                    } else {
+                        echo "success";
+                    }
                 } else {
                     echo "Fichier occupé.";
                 }
@@ -140,7 +158,7 @@
         } else {
             echo "Réservation non trouvée.";
         }
-    exit; // Terminer le script pour éviter tout autre output
+    exit;
 
 ?>
 

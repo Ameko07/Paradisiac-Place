@@ -49,6 +49,13 @@
 
 <div class="container mt-4">
 
+    <!-- bouton retour vers la page admin + liste des reservation -->
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-sm btn-outline-dark btn-retour-liste-res-admin" data-retour-mode="<?php echo htmlspecialchars($plan_de_retour_chelou['retour']['mode']); ?>">
+            <i class="bi bi-arrow-left"></i> <?php echo htmlspecialchars($plan_de_retour_chelou['retour']['texte']); ?>
+        </button>
+    </div>
+
     <h3 class="mb-4 "><i class="bi bi-calendar-check"></i> Planning des réservations</h3>
 
     <!-- utilisation de Bootstrap pour le style du tableau -->

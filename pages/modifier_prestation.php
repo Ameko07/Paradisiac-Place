@@ -42,6 +42,18 @@
                 $reservation['prestations'] = [];
             }
 
+            // on vérifie si les prestations sont dans un format associatif 
+            // ou indexé pour les convertir en indexé si besoin
+            if (is_array($reservation['prestations'])) {
+                $cles_presta = array_keys($reservation['prestations']);
+                $format_assoc = ($cles_presta !== range(0, count($cles_presta) - 1));
+                if ($format_assoc) {
+                    $reservation['prestations'] = array_values($reservation['prestations']);
+                }
+            } else {
+                $reservation['prestations'] = [];
+            }
+
             //  dans le cas ou on ajoute la prestation, 
             if($action === 'ajouter') { 
 

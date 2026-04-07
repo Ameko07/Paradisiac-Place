@@ -2,14 +2,18 @@
     "guides": [
         {"id_g": 1,"nom": "Rakoto","domaine" : "Observation","actif": true},
         {"id_g": 2,"nom": "Lalaina","domaine" : "Pirogue","actif": true},
-        {"id_g": 3,"nom": "Rasoa","domaine" : "Randonnée","actif": true}
-        
+        {"id_g": 3,"nom": "Rasoa","domaine" : "Randonnée","actif": true},
+        {"id_g": 4,"nom": "Fara","domaine" : "Culture locale","actif": true},
+        {"id_g": 5,"nom": "Hery","domaine" : "Nature et faune","actif": true},
+        {"id_g": 6,"nom": "Miora","domaine" : "Aventure terre","actif": true}
     ],
     "moniteurs": [
-        {"id_m": 1,"nom": "Rasoa","domaine" : "Plongée","actif": true},
-        {"id_m": 3,"nom": "Rakoto","domaine" : "Plongée","actif": true},
+        {"id_m": 1,"nom": "Solo","domaine" : "Plongée","actif": true},
         {"id_m": 2,"nom": "Miora","domaine" : "Quad","actif": true},
-        {"id_m": 4,"nom": "Lala","domaine" : "Quad","actif": true}
+        {"id_m": 3,"nom": "Lala","domaine" : "Quad","actif": true},
+        {"id_m": 4,"nom": "Kanto","domaine" : "Randonnée","actif": true},
+        {"id_m": 5,"nom": "Tiana","domaine" : "Pirogue","actif": true},
+        {"id_m": 6,"nom": "Aina","domaine" : "Culture locale","actif": true}
     ]
 
 

@@ -3,24 +3,26 @@
         "id_res": 1,
         "nom": "Naruto Uzumaki",
         "email": "hinata@gmail.com",
-        "date_debut": "2026-04-03",
-        "date_fin": "2026-04-05",
+        "date_debut": "2026-04-04",
+        "date_fin": "2026-04-10",
         "nb_pers": 2,
         "chambre_choisie": 1,
         "activites": [
-            1
+            1,
+            2
         ],
         "message": "test",
         "reduction": 0,
         "arrhes": 0,
-        "status": "valid\u00e9"
+        "status": "valid\u00e9",
+        "prestations": []
     },
     {
         "id_res": 2,
         "nom": "test3",
-        "email": "test3@test.com",
-        "date_debut": "2026-04-09",
-        "date_fin": "2026-04-19",
+        "email": "test3@yahoo.com",
+        "date_debut": "2026-04-11",
+        "date_fin": "2026-04-18",
         "nb_pers": 1,
         "chambre_choisie": 2,
         "activites": [
@@ -40,28 +42,32 @@
     {
         "id_res": 3,
         "nom": "test2",
-        "email": "test2@test.com",
+        "email": "test2@outlook.com",
         "date_debut": "2026-04-05",
-        "date_fin": "2026-04-18",
+        "date_fin": "2026-04-12",
         "nb_pers": 1,
-        "chambre_choisie": 1,
+        "chambre_choisie": 3,
         "activites": [
             1,
-            3
+            2
         ],
         "message": "test 2 et teste d'affichage de commentaite blabla ",
         "reduction": 0,
         "arrhes": 100,
-        "status": "valid\u00e9"
+        "status": "en attente",
+        "prestations": [
+            3,
+            2
+        ]
     },
     {
         "id_res": 4,
         "nom": "test5",
         "email": "test5@gmail.com",
-        "date_debut": "2026-04-17",
-        "date_fin": "2026-04-24",
+        "date_debut": "2026-04-08",
+        "date_fin": "2026-04-15",
         "nb_pers": 1,
-        "chambre_choisie": 1,
+        "chambre_choisie": 4,
         "activites": [
             1,
             2
@@ -69,11 +75,69 @@
         "message": "nouveau test des activit\u00e9 ",
         "reduction": 0,
         "arrhes": 0,
-        "status": "valid\u00e9",
+        "status": "en attente",
         "prestations": [
             1,
             2,
             3
         ]
+    },
+    {
+        "id_res": 5,
+        "nom": "Arrhes Test",
+        "email": "ArrhesRedu@gmail.com",
+        "date_debut": "2026-04-04",
+        "date_fin": "2026-04-10",
+        "nb_pers": 3,
+        "chambre_choisie": 5,
+        "activites": [
+            1,
+            2,
+            5
+        ],
+        "message": "Je teste les arrhes et les reduction ",
+        "reduction": 10,
+        "arrhes": 50,
+        "status": "valid\u00e9",
+        "prestations": [
+            3,
+            1,
+            8,
+            4
+        ]
+    },
+    {
+        "id_res": 6,
+        "nom": "teste Message",
+        "email": "Message@gmail.com",
+        "date_debut": "2026-04-06",
+        "date_fin": "2026-04-13",
+        "nb_pers": 1,
+        "chambre_choisie": 3,
+        "activites": [
+            1,
+            2
+        ],
+        "message": "Message de l'admin pour cette reservation ",
+        "reduction": 20,
+        "arrhes": 50,
+        "status": "en attente"
+    },
+    {
+        "id_res": 7,
+        "nom": "dernier Test",
+        "email": "Last@gmail.com",
+        "date_debut": "2026-04-17",
+        "date_fin": "2026-04-26",
+        "nb_pers": 2,
+        "chambre_choisie": 1,
+        "activites": [
+            5,
+            8
+        ],
+        "message": "",
+        "reduction": 0,
+        "arrhes": 50,
+        "status": "valid\u00e9"
     }
 ]

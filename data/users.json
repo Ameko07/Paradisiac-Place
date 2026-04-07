@@ -1,50 +1,77 @@
 [
     {
         "id_c": 1,
-        "nom": "kaka",
-        "email": "kaka@hfkah.com",
-        "mdp": "mada123",
-        "id_res": 2
-    },
-    {
-        "id_c": 2,
         "nom": "Naruto Uzumaki",
         "email": "hinata@gmail.com",
         "mdp": "mada123",
-        "id_res": 1
+        "role": "client",
+        "id_res": "1",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
+    },
+    {
+        "id_c": 2,
+        "nom": "Test3",
+        "email": "test3@yahoo.com",
+        "mdp": "mada123",
+        "role": "client",
+        "id_res": "2",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
     },
     {
         "id_c": 3,
-        "nom": "Mr test",
-        "email": "test@test.com",
+        "nom": "Test2",
+        "email": "test2@outlook.com",
         "mdp": "mada123",
-        "id_res": "3"
+        "role": "client",
+        "id_res": "3",
+        "prestation": [],
+        "arrhes": 100,
+        "reduction": 0
     },
     {
         "id_c": 4,
-        "nom": "test2",
-        "email": "test2@test.com",
+        "nom": "Test5",
+        "email": "test5@gmail.com",
         "mdp": "mada123",
+        "role": "client",
         "id_res": "4",
+        "prestation": [],
         "arrhes": 0,
         "reduction": 0
     },
     {
         "id_c": 5,
-        "nom": "test5",
-        "email": "test5@gmail.com",
+        "nom": "Arrhes Test",
+        "email": "ArrhesRedu@gmail.com",
         "mdp": "mada123",
-        "id_res": "4",
-        "arrhes": 0,
-        "reduction": 0
+        "role": "client",
+        "id_res": "5",
+        "prestation": [],
+        "arrhes": 50,
+        "reduction": 10
     },
     {
         "id_c": 6,
-        "nom": "test3",
-        "email": "test3@test.com",
-        "mdp": "mada123",
+        "nom": "teste Message",
+        "email": "Message@gmail.com",
+        "mdp": "Kq2WYdBQpp",
         "role": "client",
-        "id_res": "2",
+        "id_res": "6",
+        "prestation": [],
+        "arrhes": 50,
+        "reduction": 20
+    },
+    {
+        "id_c": 7,
+        "nom": "dernier Test",
+        "email": "Last@gmail.com",
+        "mdp": "LKGJoCx6dK",
+        "role": "client",
+        "id_res": "7",
         "prestation": [],
         "arrhes": 0,
         "reduction": 0

@@ -80,8 +80,7 @@
     $dispo_ok = ($disponibilite > 0);
 
 
-    $mdp = "admin123"; // mot de passe pour valider une reservation 
-    //$mdp = substr(str_shuffle("ABCDEFGHJKLMNPQRSTUVWXYZ23456789"), 0, 8);
+    // le mot de passe sera genere au moment de la validation serveur
     
 
 ?>
@@ -110,7 +109,7 @@
                     <strong>Type de bungalow :</strong> <?php echo htmlspecialchars($bungalo_info['nom']); ?><br>
                     <strong>Capacité :</strong> <?php echo htmlspecialchars($bungalo_info['capacite']); ?><br>
                     <strong>Dates de séjour :</strong> du <?php echo htmlspecialchars($current['date_debut']); ?> au <?php echo htmlspecialchars($current['date_fin']); ?><br>
-                    <strong>Nombre de personnes :</strong> <?php echo htmlspecialchars($current['nombre_personnes']); ?><br>
+                    <strong>Nombre de personnes :</strong> <?php echo htmlspecialchars($current['nombre_personnes'] ?? $current['nb_pers'] ?? 'Non précisé'); ?><br>
                 </p>
         <!--liste des activite aue le client a choisi-->
                 <h6> Activités souhaitées:</h6>
@@ -140,27 +139,45 @@
                 <!-- Affichage des ACTIONS de l'admin-->
                 <h6>Actions de l'admininstrateur:</h6>
 
-                <div class="card border-0 bg-light mb-3">
-                    <div class="card-body py-2">
-                        <h6 class="mb-2">Modifier les arrhes reçues</h6>
-                        <form action="pages/update_paiement.php" method="POST" class="d-inline form-update-arrhes">
-                            <input type="hidden" name="id_res" value="<?php echo htmlspecialchars($current['id_res']); ?>">
-                            <div class="input-group input-group-sm">
-                                <input type="number" name="montant_arrhes" class="form-control" min="0" step="0.01" value="<?php echo htmlspecialchars($current['arrhes'] ?? 0); ?>" placeholder="Arrhes reçues">
-                                <button class="btn btn-primary" type="submit">OK</button>
-                            </div>
-                        </form>
-                        <small class="text-muted">Montant actuel : <?php echo number_format((float)($current['arrhes'] ?? 0), 2); ?>€</small>
-                    </div>
+        <!-- Formulaire de mise à jour du paiement -->
+        <!-- s'affiche lorsque la chambre est dispo -->
+                <div class="mt-3 p-3 bg-light border rounded">
+                    <h6><i class="bi bi-cash"></i> Gestion financière</h6>
+                    <form class="form-update-paiement row g-2">
+                        <input type="hidden" name="id_res" value="<?php echo htmlspecialchars($current['id_res']); ?>">
+                        <div class="col-md-5">
+                        <!-- Affichage des montants des arrhes et de la reduction-->
+                        <!-- Les montant sont bien defini entre 0 et 100 avec min et max-->
+                            <label class="small">Arrhes reçues (€) :</label>
+                            <input type="number" name="montant_arrhes" class="form-control form-control-sm" min="0" step="0.01" 
+                            value="<?php echo htmlspecialchars($current['arrhes'] ?? 0); ?>">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="small">Réduction (%) :</label>
+
+                        <!-- Les réductions autorisées sont 0, 10, 20 et 50% -->
+                        <!--On verfie la conformite avec les valeurs autorisées-->
+                            <select name="pourcentage_reduc" class="form-select form-select-sm">
+                                <?php $reduc_actuelle = (float)($current['reduction'] ?? 0); ?>
+                                <option value="0" <?php echo ($reduc_actuelle === 0.0) ? 'selected' : ''; ?>>0%</option>
+                                <option value="10" <?php echo ($reduc_actuelle === 10.0) ? 'selected' : ''; ?>>10%</option>
+                                <option value="20" <?php echo ($reduc_actuelle === 20.0) ? 'selected' : ''; ?>>20%</option>
+                                <option value="50" <?php echo ($reduc_actuelle === 50.0) ? 'selected' : ''; ?>>50%</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-sm btn-primary w-100">Enregistrer</button>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Si la chambre est disponible, on affiche le message pour le client et le bouton de validation -->
                 <?php if($dispo_ok):?>
                     <div class="alert alert-warning py-2">
                         <small><strong>Message pour le client :</strong><br>
-                        "Bonjour <?php echo htmlspecialchars($current['nom_client']); ?>, votre réservation pour le bungalow <?php echo htmlspecialchars($bungalo_info['nom']); ?>  a été acceptée.
-                        Veuillez vous connecter à l'espace client pour qvoir plus de détails concernant votre réservtion. 
-                        Pour vous connecter, utilisez votre adresse email et le mot de passe suivant : <strong><?php echo htmlspecialchars($mdp); ?></strong>"
+                        "Bonjour <?php echo htmlspecialchars($current['nom'] ?? $current['nom_client'] ?? 'Client'); ?>, votre réservation pour le bungalow <?php echo htmlspecialchars($bungalo_info['nom']); ?> a été acceptée.
+                        Veuillez vous connecter à l'espace client pour avoir plus de détails concernant votre réservation.
+                        Le mot de passe sera généré automatiquement lors de la validation par l'administrateur."
                     </small>
                     </div>
 
@@ -168,8 +185,7 @@
                     <div class="d-grid gap-2">
                         <button class="btn btn-success btn-valider"
                             data-id="<?php echo htmlspecialchars($id); ?>"
-                            data-email="<?php echo htmlspecialchars($current['email']); ?>"
-                            data-mdp="<?php echo htmlspecialchars($mdp); ?>">
+                            data-email="<?php echo htmlspecialchars($current['email']); ?>">
                             <i class="bi bi-check-circle"></i> Confirmer la réservation et Créer le compte client
                         </button>
                     <?php endif; ?>

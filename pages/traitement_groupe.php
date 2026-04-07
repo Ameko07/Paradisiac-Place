@@ -1,8 +1,6 @@
 <?php
     /** script permettant de traiter les groupes d'activiter**/
 
-    
-    // TODO : ajouter un bouton pour revenir à la page d'accueil de l'admin liste des activités
 
 
     session_start();
@@ -19,11 +17,37 @@
     $clients = $_POST['clients'] ?? []; 
     // nom de l'animateur
     $animateur = $_POST['animateur'] ?? ''; 
+    // message partagé de l'activité
+    $message_activite = trim($_POST['message_activite'] ?? '');
+
+    // nettoyage anti doublon des participants cochés
+    $clients = array_values(array_unique(array_map('strval', $clients)));
 
 
     // est ce que tout est bien remplis ?
     if (!$id_activite || empty($clients) || !$animateur) {
         exit ("Veuillez remplir tous les champs du formulaire.");
+    }
+
+    // règles métier simples 
+    $regles_activites = [
+        1 => ['min' => 1, 'max' => 12, 'nom' => 'Observation des Lémuriens'],
+        2 => ['min' => 2, 'max' => 6,  'nom' => 'Plongée Barrière de Corail'],
+        3 => ['min' => 2, 'max' => 8,  'nom' => 'Expédition Quad Désert']
+    ];
+
+    // on vérifie que l'activité choisie existe 
+    $id_activite_int = (int)$id_activite;
+    // nb de participants sélectionnés
+    $nb_participants = count($clients);
+    if (isset($regles_activites[$id_activite_int])) {
+        $regle = $regles_activites[$id_activite_int];
+        if ($nb_participants < $regle['min']) {
+            exit("Pas assez de participants pour " . $regle['nom'] . " : minimum " . $regle['min'] . ".");
+        }
+        if ($nb_participants > $regle['max']) {
+            exit("Trop de participants pour " . $regle['nom'] . " : maximum " . $regle['max'] . ".");
+        }
     }
 
     $path_actPrevues = "../data/activite_prevue.json";
@@ -45,7 +69,7 @@
         'participants' => $clients,
         // date de creation du goupe pour pouvoir faire un trie par date de création si besoin
         'date_creation' => date('Y-m-d H:i:s'),
-        'message' => []
+        'message' => $message_activite
     );
 
     // liste des activites prévues pour ajouter le nouveau groupe
