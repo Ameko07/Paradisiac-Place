@@ -20,7 +20,7 @@
     $nom_client = $_SESSION['nom_client'] ;
 
 
-    // les info de reservqtion du client 
+    // les info de reservation du client 
     // gestion des reservation et affichage de la faccture 
 
     // on recupere les reservation du client depuis le fichier JSON
@@ -50,15 +50,6 @@
             $reservation_client = $reservation;
             $reservation_index = $index;
             break;
-        }
-    }
-
-    // compatibilité avec un ancien format de prestations en objet JSON
-    if ($reservation_client && isset($reservation_client['prestations']) && is_array($reservation_client['prestations'])) {
-        $cles_presta = array_keys($reservation_client['prestations']);
-        $format_assoc = ($cles_presta !== range(0, count($cles_presta) - 1));
-        if ($format_assoc) {
-            $reservation_client['prestations'] = array_values($reservation_client['prestations']);
         }
     }
 
@@ -96,10 +87,11 @@
         file_put_contents($fichier_reservation, json_encode($reservations, JSON_PRETTY_PRINT));
 
     }
+
+
     /** ------------------calcul de la facture------------------------- **/
 
-    
-
+    // récupération des dates de début et de fin de la reservation
     $date_debut = $reservation_client['date_debut'] ?? '';
     $date_fin = $reservation_client['date_fin'] ?? '';
 
@@ -145,6 +137,8 @@
     // pour calculer le total et afficher les détails dans la facture
     foreach ($prestations_choisies as $id_presta) {
         foreach ($liste_prestations as $presta) {
+            // si on trouve la prestation choisie dans la liste des prestations de l'offre
+            // on ajoute son prix au total et on garde ses détails pour l'affichage dans la facture
             if ($presta['id'] == $id_presta) {
                 $total_presta += $presta['prix'];
                 $details_presta[] = $presta;
@@ -180,7 +174,7 @@
             continue;
         }
 
-        // ajout des details de l'acivité validé
+        // ajout des details de l'acivité validée
         $details_activites_validees[] = [
             'nom' => $act_info['nom'],
             'unite' => $act_info['unite'] ?? 'non précisée',
@@ -236,7 +230,7 @@
                 <!-- le container fuid permert de qui prends la largeur dispo--> 
             <h1 class="display-5 fw-bold text-success">
 
-<!-- format bi-sun : -->
+<!-- format bi-sun : permet d'afficher une icône de soleil -->
                 <i class="bi bi-sun"></i>Bienvenue, <?php echo htmlspecialchars($nom_client); ?>!</h1>
             <p class="col-md-8 fs-4 text-muted"> Votre séjour à Madagascar commence ici. Voici votre récapitulatif de votre séjour.</p>
             
@@ -248,6 +242,8 @@
                 <i class="bi bi-box-arrow-left me-2"></i> Déconnexion</a>
         </div>
     </div>
+
+<!-- un div pour afficher les informations sur le séjour -->
     <div class="row">
         <div class="col-md-5">
             <div class="card border-0 shadow-sm mb-4 bg-light">
@@ -269,14 +265,16 @@
                 </div>
             </div>
         </div>
+<!--Affichage des prestations supplémentaires choisies par le client-->
         <div class="card border-0 shadow-sm mb-4 bg-light prestation-card">
             <div class="card-body">
                 <h5 class="border-bottom pb-2 mb-3">Prestations supplémentaires :</h5>
                 <div class="list-group list-group-flush">
-<!--Affichage des prestations supplémentaires choisies par le client-->
+                <!-- on parcours la liste et on affiche les prestation une par une-->
                     <?php foreach ($liste_prestations as $prestation) :
                         $isActive = in_array($prestation['id'], $prestations_choisies);
                         ?>
+                        <!-- Affichage de chaque prestation avec leur nom et leur prix -->
                                 <div class="list-group-item prestation-item d-flex align-items-center justify-content-between px-0">
                                  <span class="fw-medium"><?php echo htmlspecialchars($prestation['nom']); ?> (<?php echo htmlspecialchars($prestation['prix']); ?>€)</span> 
                     <!-- Le formulaire a remplir -->
@@ -304,7 +302,7 @@
                 </div>
             </div>
         </div>
-        
+        <!-- Affichage des activités validées par l'admin-->
         <div class="col-md-7">
             <div class="card shadow-sm border-success">
                 <div class="card-header bg-success text-white"> 

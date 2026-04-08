@@ -1,6 +1,6 @@
-<!-- pqs de html ni de body -->
 
-<!-- Premier PHP -->
+
+
 
 <!-- pour faire simple cette partie va être injecté dans index et non afficher comme étant une nouvelle page.
  de toute façon j'ai ajouté un contenaire dans index pour contenir ce qui change au niveau de la vue du client. -->
@@ -84,8 +84,10 @@ au lieu de devoir cherher les noms des chambres-->
             <div class="mb-4">
                 <label class="fw-bold text-secondary mb-2">Activités souhaitées :</label>
                 <div class="row">
+                    <!-- Affichage des options de activités -->
                     <?php foreach ($offres["activite"] as $activite) :?>
                         <div class="col-md-6 mb-2">
+                    <!-- Affichage de chaque prestation avec leur nom et leur prix et des cases à cocher pour sélectionner les activités-->
                             <div class="form-check border rounded p-2 shadow-sm" >
                                 <input class="form-check-input ms-1" type="checkbox" 
                                             name="activites[]" 

@@ -6,8 +6,8 @@ $(document).ready(function(){
 
 
     /**---------------DEBUT PARTIE ACCUEIL --------------------**/
-    // accueil : l'accueil s'affiche de base , mais se réaffiche quand on reviens en appuyant sur le bouton accueil 
-    // TODO : Bouton MadaDream qui renvoie à l'accueil et qui est visible sur toutes les pages (dans la barre de navigation)
+
+    /*Bouton d'accueil*/
     $('#menu-accueil').click(function(event){
         // on emppeche le navigateur de suivre le lien 
         event.preventDefault();
@@ -16,6 +16,7 @@ $(document).ready(function(){
         $('#main-content').load('pages/accueil.php');
             
     });
+    /*bouton LOGO */
     $('#MadaDream').click(function(event){
         // on emppeche le navigateur de suivre le lien 
         event.preventDefault();
@@ -28,21 +29,23 @@ $(document).ready(function(){
         $('#main-content').load('pages/decouvrir.php');
     });
 
-    // boutons CTA de l'accueil/découvrir
-    $(document).on('click', '.btn-go-reserver', function(event){
+    // boutons CTA de l'accueil/découvrir// Tout en bas de la page d'accueil et de la page découvrir 
+    $(document).on('click', '.versReservation', function(event){
         event.preventDefault();
         $('#menu-reserver').trigger('click');
     });
 
-    $(document).on('click', '.btn-go-client', function(event){
+    /* Bouton Espace Client */
+    $(document).on('click', '.versEspaceClient', function(event){
         event.preventDefault();
         $('#menu-client').trigger('click');
     });
 
-    $(document).on('click', '.btn-go-decouvrir, #btn-retour-accueil', function(event){
+    /*bouton de retour à l'accueil*/
+    $(document).on('click', '.versDecouverte, #btn-retour-accueil', function(event){
         event.preventDefault();
-
-        if ($(this).hasClass('btn-go-decouvrir')) {
+        // selon le bouton cliqué on charge la page d'accueil ou la page de découverte
+        if ($(this).hasClass('versDecouverte')) {
             $('#main-content').load('pages/decouvrir.php');
         } else {
             $('#main-content').load('pages/accueil.php');
@@ -56,6 +59,8 @@ $(document).ready(function(){
     /**-------------Partie Login --------------**/
     // page de l'administration à load par clique sur le bouton en haut à droite
 
+    /* Bouton Admin */
+    //gère à la fois l'ouvertur de l'espace admin et la redirection vers la page de connexion si l'admin n'est pas encore connecté
     $('#menu-admin').click(function(event){
         event.preventDefault();
 
@@ -86,11 +91,14 @@ $(document).ready(function(){
     });
 
 // gestion de la soumission du formulaire de connexion pour l'admin et le client
+    /* Bouton de connexion */
     $(document).on('submit', '#form-login', function(event){
         // on emppeche le navigateur de suivre le lien
         event.preventDefault();
         let donnees = $(this).serialize();
 
+        /* Appel ajax qui permet de vérifier les identifiants, 
+            afficher la partie admin ou sinon renvoyer une erreur */
         $.ajax({
             url: 'pages/verif_connexion.php',
             method: 'POST',
@@ -146,14 +154,15 @@ $(document).ready(function(){
     // mise a jour des arrhes depuis le detail reservation admin
     $(document).on('submit', '.form-update-arrhes', function(event){
         event.preventDefault();
-
+        // récupération du formulaire, du bouton de submit et de l'id de la réservation
         let form = $(this);
         let btn = form.find('button[type="submit"]');
         let id = form.find('input[name="id_res"]').val();
-
+        //on désactive le bouton pour ne pas faire des double clics
         btn.prop('disabled', true);
         $("#admin-retour").html("<div class='text-info'><span class='spinner-border spinner-border-sm text-info'></span> Mise à jour des arrhes...</div>");
 
+        //appel ajax pour mettre à jour les arrhes de la reservation
         $.ajax({
             url: 'pages/update_paiement.php',
             method: 'POST',

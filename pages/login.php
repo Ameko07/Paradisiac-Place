@@ -10,6 +10,11 @@
 </head>
 <body>
 
+<!--La page login est utilisé pour 2 connexions différentes
+    Connexion en tant que client
+    Connexion en tant qu'admin
+-->
+
     <div class="container mt-5" >
     <!-- Le div en conteneur qui va contenir la page de connexion -->
 
@@ -72,27 +77,6 @@
 
         </div>
     </div>
-    <!-- Bonus pour customiser le style de la page-->
-    <!-- .card permet de creer une carte perso mais cache -->
-    <!-- .btn-primary permet de customiser le bouton de connexion -->
-    <!-- .btn-primary:hover permet de creer une animation au survol du bouton de connexion -->
-    <style>
-
-
-        .card {
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            border-radius: 10px;
-            transition : 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-    </style>
+ 
 </body>
 </html>

@@ -17,33 +17,44 @@ body {
 .navbar {
     border-bottom: 3px solid #ffc107;
 }
-
+/* La bare de navigation principal */
 .navbar.navbar-dark {
     background: linear-gradient(90deg, #083d2f 0%, #0f5e46 100%) !important;
 }
 
+/* Liens de la navbar */
 .navbar-dark .navbar-brand,
 .navbar-dark .nav-link {
     color: #f6f4ec !important;
 }
+
+/* Hover et focus pour les liens de la navbar 
+    !important permet d'ecrasser 
+    les styles par defaut de boostrap
+*/
 
 .navbar-dark .nav-link:hover,
 .navbar-dark .nav-link:focus {
     color: var(--mada-sable) !important;
 }
 
+/** Les boutons primary et leur style **/
 .btn-primary,
 .bg-primary {
     background-color: var(--mada-vert) !important;
     border-color: var(--mada-vert) !important;
 }
-
+/** hover : quand on survole le bouton
+    focus : quand le bouton est actif (cliqué ou sélectionné)
+    active : quand le bouton est en cours d'utilisation (maintenu enfoncé)
+**/
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
     background-color: #0f5a43 !important;
     border-color: #0f5a43 !important;
 }
+/** les textes principaux **/ 
 
 .text-primary {
     color: var(--mada-vert) !important;
@@ -54,7 +65,10 @@ h1 {
     font-weight: bold;
 }
 
-.landing-hero {
+/** Dans boostrap landing hero est un conteneur pour le hero section 
+Dans la page d'accueil **/
+
+.sectionHero {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
@@ -68,83 +82,89 @@ h1 {
     align-items: center;
 }
 
-.landing-hero-content {
+.contenuHero {
     color: #ffffff;
     padding: 2.2rem;
     max-width: 760px;
 }
 
-.landing-hero-title {
+.titreHero {
     color: #ffffff;
     font-size: clamp(1.8rem, 4vw, 3.1rem);
     line-height: 1.1;
     margin-bottom: 0.8rem;
 }
 
-.landing-hero-subtitle {
+.sousTitreHero {
     font-size: 1.05rem;
     opacity: 0.95;
 }
 
-.landing-cta-row {
+/** Boutons CTA : qui permettent de faire 
+un appel à l'action **/
+
+.ligneBoutons {
     display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
     margin-top: 1.2rem;
 }
 
-.btn-mada-main {
+/** Bouton les boutons principaux 
+qui sont : **/
+.boutonSable {
     background-color: var(--mada-sable);
     border: none;
     color: #2f2a1e;
     font-weight: 700;
 }
 
-.btn-mada-main:hover {
+.boutonSable:hover {
     background-color: #ecd897;
 }
 
-.btn-mada-outline {
+.boutonContour {
     border: 1px solid #ffffff;
     color: #ffffff;
     font-weight: 600;
 }
 
-.btn-mada-outline:hover {
+.boutonContour:hover {
     background-color: rgba(255, 255, 255, 0.12);
     color: #ffffff;
 }
-
+/**  pour tout les boutons avec la classe btn **/
 .btn {
     transition: all 0.3s ease-in-out;
 }
 
-.landing-section {
+/** bloc d'informations dans la page d'accueil **/
+.blocInfo {
     margin-bottom: 1.4rem;
 }
 
-.landing-card {
+.carteMada {
     border: 1px solid #d8e9e2;
     border-radius: 14px;
     height: 100%;
 }
 
-.landing-card .card-title {
+.carteMada .card-title {
     color: var(--mada-vert-fonce);
 }
 
-.landing-reasons {
+.listeAvantages {
     border-radius: 18px;
     background: linear-gradient(180deg, #ffffff 0%, #f2f8f6 100%);
     border: 1px solid #d8e9e2;
     padding: 1rem;
 }
 
-.landing-reasons li {
+.listeAvantages li {
     margin-bottom: 0.35rem;
 }
 
-.landing-bottom-cta {
+.bandeauBas {
     margin-top: 2rem;
     margin-bottom: 1.4rem;
     border-radius: 16px;
@@ -153,7 +173,7 @@ h1 {
     padding: 1.2rem;
 }
 
-.landing-bottom-cta h3 {
+.bandeauBas h3 {
     color: #ffffff;
 }
 

@@ -111,12 +111,12 @@
                     <strong>Dates de séjour :</strong> du <?php echo htmlspecialchars($current['date_debut']); ?> au <?php echo htmlspecialchars($current['date_fin']); ?><br>
                     <strong>Nombre de personnes :</strong> <?php echo htmlspecialchars($current['nombre_personnes'] ?? $current['nb_pers'] ?? 'Non précisé'); ?><br>
                 </p>
-        <!--liste des activite aue le client a choisi-->
+        <!--liste des activite que le client a choisi-->
                 <h6> Activités souhaitées:</h6>
 
         <!--Affichage en structure de liste -->
                     <ul>
-        <!-- Le un script qui verifie si la liste des ativite est vide ou non-->
+        <!-- un script qui verifie si la liste des ativite est vide ou non-->
                         <?php 
                         if (!empty($current['activites'])) {
 

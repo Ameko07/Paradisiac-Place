@@ -1,4 +1,8 @@
 <?php
+
+/** Un script pour sauvegarder les données de réservation après soumission du formulaire **/
+
+
     // récupération des données de réservation 
     // des variable pour stocker les données de la reservation 
     $deb = new DateTime($_POST['date_debut']); // date de début
@@ -22,7 +26,7 @@
     $path = "../data/reservation.json";
 
     
-
+    //on va récupérer les réservations qu'on possède déjà pour ajouter la nouvelle 
     $reservations_exist = [];
     if (file_exists($path)) {
         $json = file_get_contents($path);
@@ -69,8 +73,9 @@
     $reservations_exist[] = $new_resrvation;
 
 
-    // Ecriture avec la sécurité flock pour ne pas avoir des conflit (pas vraiment utile car on est sur une seule page de réservation))
-    // pas nécéssaire mais je fais quand même 
+    // Ecriture avec la sécurité flock pour ne pas avoir des conflit 
+    // (pas vraiment utile car on est sur une seule page de réservation))
+ 
     
     $flockOp = fopen($path, 'w');
     if ($flockOp) {

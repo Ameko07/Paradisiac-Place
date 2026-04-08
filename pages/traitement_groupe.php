@@ -1,5 +1,5 @@
 <?php
-    /** script permettant de traiter les groupes d'activiter**/
+    /** script permettant de traiter les groupes d'activiter par l'admin**/
 
 
 

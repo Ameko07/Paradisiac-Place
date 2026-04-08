@@ -1,8 +1,11 @@
-<!--Un fihier php qui permettra à l'admin de valider les réservations -->
-<!--à rajouter dans l'interface d'administration-->
+
 
 <?php
-
+    /** Page de validation des réservations pour l'admin
+     * Affiche les réservations en attente avec les informations du client, les dates de séjour et le type de client (membre ou non)
+     * Permet à l'admin d'examiner les détails de chaque réservation
+     * Permet à l'admin d'accepter ou de refuser une réservation
+     * **/
 // gestion de connexion admin + navigation retour vers la liste des réservations
 
     session_start();
@@ -26,15 +29,9 @@
 
     // la liste des mails déjà utilisé pour faire une réservation
     $mails_reservation = array_column($users, 'email');
-
-    
-    
-     
-    
-    
-    
-    
 ?>
+
+<!-- div principal -->
 
 <div class="container mt-4">
     <!-- bouton retour vers la liste des reservation -->
@@ -50,11 +47,9 @@
     <div id="admin-retour" class="mb-3"></div>
     
     <!-- utilisation de Bootstrap pour le style du tableau -->
-
     <table class="table table-hover align-middle">
 
     <!-- utilisation de Bootstrap pour le style du tableau -->
-<!--utilisation de thread pour automatiser la validation-->
         <thead>
             <tr>
                 <th>Informations Client</th>
@@ -67,12 +62,13 @@
         <tbody id="table-reservations">
 
             <?php
+            /** un script pour afficher les réservations en attente **/
+
                 // parcour des réservation pour afficher uniquement les en attente
                 foreach ($attentes as $reservation) :
                     if ($reservation['status'] == 'en attente') :?>
-
+            <!-- chaque ligne de réservation on un id different : ca permet de cibler chaque réservation lors des actions -->
             <tr id="row-<?php echo $reservation['id_res']; ?>" class="tr-res" data-id="<?php echo $reservation['id_res']; ?>" style="cursor: pointer;">
-                <!-- Affichage des informations du client -->
                 <td>
                 <!--Affichage des informations du client-->
                 <!-- Utilisation de Bootstrap pour le style du tableau -->

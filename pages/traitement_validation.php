@@ -17,7 +17,7 @@
     
     $idValider = $_POST['id']??null; // id de la réservation à valider
 
-    // variable mail car js envoie mail et non email pour éviter les confusions avec les variables PHP
+    
     $mail = $_POST['mail'] ?? ''; // mail du client pour vérifier s'il est déjà membre
     $action = $_POST['action'] ?? ''; //valider ou refuser
 
@@ -77,10 +77,6 @@
                             break;
                         }
                     }
-        
-
-
-            
 
                 // sinon on ajoute le nouvel utilisateur dans le fichier JSON des users
                 if (!$existe) {

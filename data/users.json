@@ -75,5 +75,16 @@
         "prestation": [],
         "arrhes": 0,
         "reduction": 0
+    },
+    {
+        "id_c": 8,
+        "nom": "Dernier test",
+        "email": "MailTEst@gmail.com",
+        "mdp": "UuChb8MrQh",
+        "role": "client",
+        "id_res": "8",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
     }
 ]

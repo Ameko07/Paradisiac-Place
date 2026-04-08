@@ -5,8 +5,6 @@
 
 
 <!--barre de navigation -->
-
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <!--Boite invisible qui empêche le menu de se coller au bord de l'ecran-->
     <div class="container">

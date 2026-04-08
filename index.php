@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
 <body>
+    <!--Barre de navigation  venant de bootstrap-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <!--Boite invisible aui empeche le menu de se coller au bord de l'ecran-->
 
