@@ -191,7 +191,9 @@
                     <?php endif; ?>
 
                     <button class="btn btn-outline-danger btn-refuser"
-                        data-id="<?php echo htmlspecialchars($id); ?>">
+                        data-id="<?php echo htmlspecialchars($id); ?>"
+                        data-email="<?php echo htmlspecialchars($current['email']); ?>"
+                        data-nom="<?php echo htmlspecialchars($current['nom'] ?? $current['nom_client'] ?? 'Client'); ?>">
                         <i class="bi bi-x-circle"></i> Refuser la réservation
                     </button>
                                             

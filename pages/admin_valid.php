@@ -17,15 +17,21 @@
     }
     // on va récupérer toute les reservation en status "en attente"
     $json = file_get_contents("../data/reservation.json");
-    $attentes = json_decode($json, true);
+    $attentes = json_decode($json, true) ?: [];
 
     // les users aussi pour voir s'il n'existe pas déjà un mail qui a fait une réservation
     $json_users = file_get_contents("../data/users.json");
-    $users = json_decode($json_users, true);
+    $users = json_decode($json_users, true) ?: [];
 
     // on récupère les offre pour voir si la cohérence avec les demande et les offres
     $json_offres = file_get_contents("../data/offre.json");
-    $offres = json_decode($json_offres, true);
+    $offres = json_decode($json_offres, true) ?: [];
+
+    // index des bungalows pour recuperer rapidement nom et stock par id
+    $chambres_par_id = [];
+    foreach (($offres['chambre'] ?? []) as $chambre) {
+        $chambres_par_id[$chambre['id']] = $chambre;
+    }
 
     // la liste des mails déjà utilisé pour faire une réservation
     $mails_reservation = array_column($users, 'email');
@@ -62,11 +68,47 @@
         <tbody id="table-reservations">
 
             <?php
-            /** un script pour afficher les réservations en attente **/
+            /** un script pour afficher les réservations en attente 
+             * et calculer la disponibilité des chambres **/
 
                 // parcour des réservation pour afficher uniquement les en attente
                 foreach ($attentes as $reservation) :
-                    if ($reservation['status'] == 'en attente') :?>
+                    if (($reservation['status'] ?? '') == 'en attente') :
+                        // on récupère les informations de la chambre choisie pour cette réservation
+                        $chambre_id = (int)($reservation['chambre_choisie'] ?? 0);
+                        $date_debut_actuelle = $reservation['date_debut'] ?? '';
+                        $date_fin_actuelle = $reservation['date_fin'] ?? '';
+
+                        $chambre_info = $chambres_par_id[$chambre_id] ?? null;
+                        $stock_chambre = (int)($chambre_info['disponible'] ?? 0);
+                        $nom_chambre = $chambre_info['nom'] ?? 'Bungalow inconnu';
+
+                        // occupation calculee avec les reservations validees qui se chevauchent sur la meme chambre
+                        $occupation = 0;
+                        foreach ($attentes as $autre) {
+                            if ((int)($autre['id_res'] ?? 0) === (int)($reservation['id_res'] ?? 0)) {
+                                continue;
+                            }
+
+                            if ((int)($autre['chambre_choisie'] ?? 0) !== $chambre_id) {
+                                continue;
+                            }
+
+                            if (($autre['status'] ?? '') !== 'validé') {
+                                continue;
+                            }
+
+                            $autre_debut = $autre['date_debut'] ?? '';
+                            $autre_fin = $autre['date_fin'] ?? '';
+                            $chevauche = $date_debut_actuelle < $autre_fin && $date_fin_actuelle > $autre_debut;
+                            if ($chevauche) {
+                                $occupation++;
+                            }
+                        }
+
+                        $disponibilite = $stock_chambre - $occupation;
+                        $dispo_ok = $disponibilite > 0;
+                    ?>
             <!-- chaque ligne de réservation on un id different : ca permet de cibler chaque réservation lors des actions -->
             <tr id="row-<?php echo $reservation['id_res']; ?>" class="tr-res" data-id="<?php echo $reservation['id_res']; ?>" style="cursor: pointer;">
                 <td>
@@ -86,8 +128,13 @@
                 </td>
                 <!--Affichage du nombre de personnes-->
                 <td>
-                    <span class="badge bg-info text-dark"><?php echo htmlspecialchars($reservation['nb_pers']); ?>Pers.</span><br>
-                    
+                    <strong><?php echo htmlspecialchars($nom_chambre); ?></strong><br>
+                    <span class="badge bg-info text-dark"><?php echo htmlspecialchars($reservation['nb_pers']); ?> Pers.</span><br>
+                    <?php if ($dispo_ok): ?>
+                        <span class="badge bg-success mt-1"><?php echo htmlspecialchars($disponibilite); ?> chambre(s) libre(s)</span>
+                    <?php else: ?>
+                        <span class="badge bg-danger mt-1">Complet sur ces dates</span>
+                    <?php endif; ?>
                 </td>
 
 

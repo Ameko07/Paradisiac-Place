@@ -86,5 +86,27 @@
         "prestation": [],
         "arrhes": 0,
         "reduction": 0
+    },
+    {
+        "id_c": 9,
+        "nom": "richard",
+        "email": "richard@gmail.com",
+        "mdp": "kDe256zADw",
+        "role": "client",
+        "id_res": "9",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
+    },
+    {
+        "id_c": 10,
+        "nom": "Jean Batiste",
+        "email": "jeanBTS@gmail.com",
+        "mdp": "XsSKmMjJ62",
+        "role": "client",
+        "id_res": "10",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
     }
 ]

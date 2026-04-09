@@ -381,7 +381,7 @@ $(document).ready(function(){
                             "<div class='card border-success'>" +
                                 "<div class='card-body py-2'>" +
                                     "<label class='form-label small fw-bold mb-1'>Message prêt à copier dans votre mail :</label>" +
-                                    "<textarea class='form-control form-control-sm mail-ready-admin' rows='8' readonly></textarea>" +
+                                    "<textarea class='form-control form-control-sm mail-ready-admin' rows='9'></textarea>" +
                                     "<button type='button' class='btn btn-sm btn-outline-success mt-2 btn-copier-mail-admin'>Copier le message</button>" +
                                 "</div>" +
                             "</div>"
@@ -494,27 +494,74 @@ $(document).ready(function(){
         // récupération de l'id de la reservation à refuser
         let btn = $(this);
         let id = $(this).data('id');
+        let mailClient = btn.data('email');
+        let nomClient = btn.data('nom') || 'Client';
 
-        btn.parent().find('button').prop('disabled', true);
-        // message patienter pour l'admin 
-        $("#admin-retour").html("<div class='text-info'>"+ 
-            "<span class='spinner-border spinner-border-sm text-info'></span>" +"Traitement en cours...</div>");
-        
         if (confirm("Êtes-vous sûr de vouloir refuser cette réservation ?")){
-            btn.closest('.btn-group').find('button').prop('disabled', true); // désactivation des boutons pour éviter les double clics
+            btn.parent().find('button').prop('disabled', true);
+            // message patienter pour l'admin 
+            $("#admin-retour").html("<div class='text-info'>"+ 
+                "<span class='spinner-border spinner-border-sm text-info'></span>" +"Traitement en cours...</div>");
+
             $.post('pages/traitement_validation.php', {
                 id: id,
+                mail: mailClient,
                 action: 'refuser'
             }, function(response){
-                if(response.trim() === "success"){
-                    // affichage du message de succès
-                    // on supprime la ligne de la réservation refusée du tableau
-                    // utilisation de fadeOut pour une transition plus fluide avant de supprimer la ligne du DOM
-                    $(`#row-${id},#details-${id}`).fadeOut(500, function(){
-                        $(this).remove(); // suppression de la ligne après l'animation de disparition
-                    });
-                    $("#admin-retour").html("<div class='alert alert-success py-1'> Réservation refusée !</div>");
+                // tentative de parsing de la réponse pour vérifier le status
+
+                let payload = null;
+                let reponseTexte = (response || "").toString();
+
+                try {
+                    payload = JSON.parse(reponseTexte);
+                } catch(e) {
+                    payload = null;
                 }
+
+                if ((payload && payload.status === 'success') || reponseTexte.trim() === 'success'){
+                    let messageMailRefus =
+                        "Bonjour " + (payload && payload.nom ? payload.nom : nomClient) + ",\n\n" +
+                        "Nous vous informons que votre réservation n'a pas pu être validée pour le moment.\n\n" +
+                        "Motif :\n" +
+                        "- [ ] Nombre de personnes supérieur à la capacité du bungalow demandé\n" +
+                        "- [ ] Bungalow non disponible sur les dates demandées\n" +
+                        "- [ ] Autre : ............................................................\n\n" +
+                        "Détails complémentaires :\n" +
+                        ".........................................................................\n" +
+                        ".........................................................................\n\n" +
+                        "Vous pouvez contacter l'équipe administrative pour échanger sur une autre option de séjour.\n\n" +
+                        "Cordialement,\n" +
+                        "L'équipe MadaDream";
+
+                    $("#admin-retour").html(
+                        "<div class='alert alert-success py-1 mb-2'>Réservation refusée avec succès !</div>" +
+                        "<div class='card border-danger'>" +
+                            "<div class='card-body py-2'>" +
+                                "<label class='form-label small fw-bold mb-1'>Message prêt à copier dans votre mail :</label>" +
+                                "<textarea class='form-control form-control-sm mail-ready-admin' rows='11'></textarea>" +
+                                "<button type='button' class='btn btn-sm btn-outline-danger mt-2 btn-copier-mail-admin'>Copier le message</button>" +
+                            "</div>" +
+                        "</div>"
+                    );
+
+                    $("#admin-retour .mail-ready-admin").val(messageMailRefus);
+
+                    // on supprime la ligne de la réservation refusée du tableau
+                    $(`#row-${id},#details-${id}`).fadeOut(500, function(){
+                        $(this).remove();
+                    });
+                    // sécurité : au cas ou fadeOut ne retire pas bien la ligne
+                    setTimeout(function(){
+                        $(`#row-${id},#details-${id}`).remove();
+                    }, 650);
+                } else {
+                    $("#admin-retour").html("<div class='alert alert-danger py-1'> ERREUR au niveau du serveur: " + response + "</div>");
+                    btn.parent().find('button').prop('disabled', false);
+                }
+            }).fail(function(){
+                $("#admin-retour").html("<div class='alert alert-danger py-1'> ERREUR : Impossible de refuser la réservation. Veuillez réessayer plus tard.</div>");
+                btn.parent().find('button').prop('disabled', false);
             });
         }
     });

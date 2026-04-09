@@ -135,13 +135,19 @@
                     if ($action === 'valider') {
                         echo json_encode([
                             'status' => 'success',
+                            'action' => 'valider',
                             'nom' => $reserv_info['nom'] ?? '',
-                            'email' => $mail,
+                            'email' => $mail ?: ($reserv_info['email'] ?? ''),
                             'password' => $mdp_genere,
                             'compteExistant' => $existe
                         ]);
                     } else {
-                        echo "success";
+                        echo json_encode([
+                            'status' => 'success',
+                            'action' => 'refuser',
+                            'nom' => $reserv_info['nom'] ?? '',
+                            'email' => $mail ?: ($reserv_info['email'] ?? '')
+                        ]);
                     }
                 } else {
                     echo "Fichier occupé.";

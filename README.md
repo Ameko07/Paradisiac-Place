@@ -24,6 +24,9 @@ La page d'accueil est la première page que les visiteurs peuvent explorer avec 
 
 ### Outils d'administration
 L'accès sécurisé permet de gérer l'activité globale. L'administrateur visualise les réservations en attente et peut examiner chaque dossier en détail avant de trancher, il peut notamment visualisé les réservations déjà validé dans le planning. Lorsqu'une demande est acceptée, le système génère automatiquement un compte client. L'équipe peut ensuite ajuster les informations financières, comme le montant des arrhes versées ou l'application d'une réduction. Un modèle de message contenant les accès est alors mis à disposition pour informer rapidement le client.
+Identif : admin, mot de passe : admin123
+
+### Gestion des réservations
 
 ### Organisation des activités
 La gestion des loisirs permet de consulter les demandes quotidiennes grâce à un filtre par date. L'administrateur crée des groupes de participants et désigne un animateur tout en veillant au respect des jauges minimales et maximales propres à chaque activité. Le système distingue clairement les groupes déjà confirmés des demandes encore en suspens.

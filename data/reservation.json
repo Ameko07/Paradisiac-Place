@@ -73,9 +73,9 @@
             2
         ],
         "message": "nouveau test des activit\u00e9 ",
-        "reduction": 0,
-        "arrhes": 0,
-        "status": "en attente",
+        "reduction": 10,
+        "arrhes": 50,
+        "status": "valid\u00e9",
         "prestations": [
             1,
             2,
@@ -121,7 +121,12 @@
         "message": "Message de l'admin pour cette reservation ",
         "reduction": 20,
         "arrhes": 50,
-        "status": "en attente"
+        "status": "valid\u00e9",
+        "prestations": [
+            2,
+            4,
+            5
+        ]
     },
     {
         "id_res": 7,
@@ -155,6 +160,83 @@
         "message": "Ceci est un test pour une bonne r\u00e9servation",
         "reduction": 0,
         "arrhes": 0,
-        "status": "valid\u00e9"
+        "status": "valid\u00e9",
+        "prestations": [
+            1,
+            3
+        ]
+    },
+    {
+        "id_res": 9,
+        "nom": "richard",
+        "email": "richard@gmail.com",
+        "date_debut": "2026-04-10",
+        "date_fin": "2026-04-12",
+        "nb_pers": 3,
+        "chambre_choisie": 3,
+        "activites": [
+            4,
+            7
+        ],
+        "message": "voyage en famille",
+        "reduction": 10,
+        "arrhes": 50,
+        "status": "en attente",
+        "prestations": [
+            1
+        ]
+    },
+    {
+        "id_res": 10,
+        "nom": "Jean Batiste",
+        "email": "jeanBTS@gmail.com",
+        "date_debut": "2026-04-15",
+        "date_fin": "2026-04-18",
+        "nb_pers": 4,
+        "chambre_choisie": 5,
+        "activites": [
+            2,
+            5
+        ],
+        "message": "une reservation non membre",
+        "reduction": 10,
+        "arrhes": 30,
+        "status": "en attente"
+    },
+    {
+        "id_res": 11,
+        "nom": "Refus Imm\u00e9diat",
+        "email": "RefusImmediat@gmail.com",
+        "date_debut": "2026-04-18",
+        "date_fin": "2026-04-19",
+        "nb_pers": 3,
+        "chambre_choisie": 2,
+        "activites": [
+            1,
+            4,
+            8
+        ],
+        "message": "Ceci est une r\u00e9servation \u00e0 refuser",
+        "reduction": 0,
+        "arrhes": 100,
+        "status": "en attente"
+    },
+    {
+        "id_res": 12,
+        "nom": "test6",
+        "email": "test6@gmail.com",
+        "date_debut": "2026-04-16",
+        "date_fin": "2026-04-19",
+        "nb_pers": 4,
+        "chambre_choisie": 2,
+        "activites": [
+            2,
+            4,
+            5
+        ],
+        "message": "",
+        "reduction": 0,
+        "arrhes": 0,
+        "status": "en attente"
     }
 ]

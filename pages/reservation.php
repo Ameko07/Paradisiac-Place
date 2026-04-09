@@ -74,7 +74,7 @@ au lieu de devoir cherher les noms des chambres-->
                     
                     // parcour de la liste des offres de chambre et afficher les détails de chacun
                         foreach($offres['chambre'] as $chambre){
-                            echo "<option value ='".htmlspecialchars($chambre['id'])."'>".htmlspecialchars($chambre['nom'])." (".htmlspecialchars($chambre['prix'])."€/nuit)</option>";
+                            echo "<option value ='".htmlspecialchars($chambre['id'])."'>".htmlspecialchars($chambre['nom'])." (".htmlspecialchars($chambre['prix'])."€/nuit, capacité ".htmlspecialchars($chambre['capacite'])." pers.)</option>";
                         }
                     ?>
                 </select>
