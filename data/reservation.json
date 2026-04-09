@@ -73,9 +73,9 @@
             2
         ],
         "message": "nouveau test des activit\u00e9 ",
-        "reduction": 0,
-        "arrhes": 0,
-        "status": "en attente",
+        "reduction": 10,
+        "arrhes": 50,
+        "status": "valid\u00e9",
         "prestations": [
             1,
             2,
@@ -156,5 +156,25 @@
         "reduction": 0,
         "arrhes": 0,
         "status": "valid\u00e9"
+    },
+    {
+        "id_res": 9,
+        "nom": "richard",
+        "email": "richard@gmail.com",
+        "date_debut": "2026-04-10",
+        "date_fin": "2026-04-12",
+        "nb_pers": 3,
+        "chambre_choisie": 3,
+        "activites": [
+            4,
+            7
+        ],
+        "message": "voyage en famille",
+        "reduction": 10,
+        "arrhes": 50,
+        "status": "en attente",
+        "prestations": [
+            1
+        ]
     }
 ]

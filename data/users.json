@@ -86,5 +86,16 @@
         "prestation": [],
         "arrhes": 0,
         "reduction": 0
+    },
+    {
+        "id_c": 9,
+        "nom": "richard",
+        "email": "richard@gmail.com",
+        "mdp": "kDe256zADw",
+        "role": "client",
+        "id_res": "9",
+        "prestation": [],
+        "arrhes": 0,
+        "reduction": 0
     }
 ]

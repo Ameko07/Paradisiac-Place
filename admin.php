@@ -5,6 +5,10 @@
 
 
 <!--barre de navigation -->
+<!--Les identifiants pour se connecter en tant qu'admin : 
+    id = admin
+    mdp = admin123 
+-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <!--Boite invisible qui empêche le menu de se coller au bord de l'ecran-->
     <div class="container">
