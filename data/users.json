@@ -97,6 +97,7 @@
         "prestation": [],
         "arrhes": 0,
         "reduction": 0
+<<<<<<< HEAD
     },
     {
         "id_c": 10,
@@ -108,5 +109,7 @@
         "prestation": [],
         "arrhes": 0,
         "reduction": 0
+=======
+>>>>>>> 4d2aed9d50921098e86f5e44fbd3c70e1aa8cbc0
     }
 ]
